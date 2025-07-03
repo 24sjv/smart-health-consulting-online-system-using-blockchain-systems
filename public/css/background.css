@@ -1,0 +1,160 @@
+/* Modern glassmorphism design with medical background */
+:root {
+  --glass-border: rgba(255, 255, 255, 0.25);
+  --glass-background: rgba(255, 255, 255, 0.15);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --glass-blur: 3px;
+  --primary-color: #3b82f6;
+  --primary-dark: #2563eb;
+  --accent-color: #10b981;
+  --text-color: #1e293b;
+  --light-text: #64748b;
+}
+
+body {
+  background-image: url('../images/pexels-health-bg.jpeg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  position: relative !important;
+  font-family: 'Inter', 'Segoe UI', sans-serif !important;
+  color: var(--text-color) !important;
+}
+
+/* Removed overlay for fully visible background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  z-index: -1;
+}
+
+/* Glassmorphism card effect for all containers */
+.card, .feature-card, .appointment-card, .prescription-card,
+.login-form, .register-form, .modal-content, .chatbot-container,
+.hospital-card, form, .symptom-card, .profile-card, 
+.doctor-card, .container > div, .content-wrapper {
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  background: var(--glass-background) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Hover animation for cards */
+.card:hover, .feature-card:hover, .appointment-card:hover, .prescription-card:hover,
+.doctor-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.4) !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Navbar with glassmorphism */
+.navbar, .header {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  box-shadow: 0 4px 20px rgba(31, 38, 135, 0.15) !important;
+}
+
+/* Glowing buttons */
+.btn, button, input[type="submit"], input[type="button"] {
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-dark)) !important;
+  border: none !important;
+  color: white !important;
+  padding: 10px 20px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn:hover, button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Form elements styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  width: 100% !important;
+  background-color: white !important;
+  font-size: 16px !important;
+  height: 48px !important;
+  color: #1e293b !important;
+  box-shadow: none !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+  outline: none !important;
+}
+
+/* Form layout */
+.form-group {
+  margin-bottom: 20px !important;
+}
+
+label {
+  display: block !important;
+  margin-bottom: 8px !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  font-size: 16px !important;
+}
+
+::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+/* Radio buttons and checkboxes */
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 5px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Neon accents for important elements */
+.status-badge, .notification, .alert, h1 {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    --glass-blur: 6px;
+  }
+  
+  .card, .feature-card, .appointment-card, .prescription-card {
+    padding: 15px !important;
+  }
+}

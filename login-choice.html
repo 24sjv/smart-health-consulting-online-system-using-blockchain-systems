@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Login Type</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            transform: translateX(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-arrow {
+            width: 20px;
+            height: 20px;
+            border: solid #1e293b;
+            border-width: 0 2px 2px 0;
+            transform: rotate(135deg);
+            margin-left: 5px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: #1e293b;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: left;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        .card-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-button {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .register-text {
+            margin-top: 40px;
+            color: #64748b;
+        }
+
+        .register-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-link:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2em;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+        }
+        
+        /* Contact Footer */
+        .contact-footer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .contact-footer a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Chatbot Widget Styles */
+        #chatbot-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1001;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-collapsed .chatbot-container {
+            display: none;
+        }
+        
+        .chatbot-button {
+            background: #3b82f6;
+            color: white;
+            border-radius: 50px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .chatbot-icon {
+            font-size: 1.5em;
+        }
+        
+        .chatbot-label {
+            font-weight: 500;
+        }
+        
+        .chatbot-container {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 450px;
+        }
+        
+        .chatbot-header {
+            padding: 15px;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 85%;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .bot-avatar {
+            background: #dbeafe;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        
+        .user-avatar {
+            background: #3b82f6;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+        }
+        
+        .message-content {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.95em;
+        }
+        
+        .user-message .message-content {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .chatbot-input {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+        
+        .chatbot-input button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .chatbot-input button:hover {
+            background: #2563eb;
+        }
+        
+        .suggested-queries {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .suggested-queries button {
+            background: #dbeafe;
+            color: #3b82f6;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 0.85em;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+        
+        .suggested-queries button:hover {
+            background: #bfdbfe;
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-container {
+                width: 300px;
+                height: 400px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/shared.css">
+</head>
+<body style="background-image: url('/images/pexels-health-bg.jpeg') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed !important;">
+    <div class="header">
+        <a href="index.html" class="back-button">
+            <span class="back-arrow"></span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">Choose Login Type</h1>
+        <p class="subtitle">Select how you'd like to login to our platform</p>
+        
+        <div class="cards-container">
+            <a href="doctor-login.html" class="card">
+                <div class="icon">👨‍⚕️</div>
+                <h2 class="card-title">Login as Doctor</h2>
+                <p class="card-description">Access your professional dashboard and connect with patients seeking medical advice.</p>
+                <span class="card-button">Doctor Login</span>
+            </a>
+
+            <a href="patient-login.html" class="card">
+                <div class="icon">👤</div>
+                <h2 class="card-title">Login as Patient</h2>
+                <p class="card-description">Access your health records and connect with healthcare professionals.</p>
+                <span class="card-button">Patient Login</span>
+            </a>
+        </div>
+
+        <p class="register-text">
+            Don't have an account? <a href="register-choice.html" class="register-link">Register here</a>
+        </p>
+    </div>
+
+  <!-- Auto-injected scripts for blockchain and MongoDB integration -->
+  <script src="/public/js/api.js"></script>
+  <script src="/public/js/blockchain-widget.js"></script>
+  <script src="/public/js/init.js"></script>
+  <script src="/public/js/auth.js"></script>
+  
+  <!-- Contact Footer -->
+  <div class="contact-footer">
+      Need help? <a href="mailto:admin@gmail.com">Contact Admin</a>
+  </div>
+  
+  <!-- AI Chatbot Widget -->
+  <div id="chatbot-widget" class="chatbot-collapsed">
+      <div class="chatbot-button" onclick="toggleChatbot()">
+          <span class="chatbot-icon">💬</span>
+          <span class="chatbot-label">HealthBot</span>
+      </div>
+      <div class="chatbot-container">
+          <div class="chatbot-header">
+              <h3>HealthBot Assistant</h3>
+              <button onclick="toggleChatbot()" class="close-btn">✕</button>
+          </div>
+          <div class="chatbot-messages" id="chatMessages">
+              <div class="message bot-message">
+                  <div class="bot-avatar">🤖</div>
+                  <div class="message-content">
+                      Hello! I'm HealthBot, your virtual healthcare assistant. How can I help you with logging in today?
+                      <div class="suggested-queries">
+                          <button onclick="handleSuggestedQuery('Doctor login help')">Doctor login help</button>
+                          <button onclick="handleSuggestedQuery('Patient login help')">Patient login help</button>
+                          <button onclick="handleSuggestedQuery('Forgot password')">Forgot password</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="chatbot-input">
+              <input type="text" id="userInput" placeholder="Type your question here..." onkeypress="if(event.key === 'Enter') sendMessage()">
+              <button onclick="sendMessage()">Send</button>
+          </div>
+      </div>
+  </div>
+  
+  <script>
+      // Chatbot functionality
+      function toggleChatbot() {
+          const chatbotWidget = document.getElementById('chatbot-widget');
+          chatbotWidget.classList.toggle('chatbot-collapsed');
+      }
+      
+      function sendMessage() {
+          const userInput = document.getElementById('userInput');
+          const userMessage = userInput.value.trim();
+          
+          if (userMessage === '') return;
+          
+          // Add user message to chat
+          addMessage('user', userMessage);
+          
+          // Clear input
+          userInput.value = '';
+          
+          // Process the message and respond
+          setTimeout(() => {
+              processUserMessage(userMessage);
+          }, 600);
+      }
+      
+      function handleSuggestedQuery(query) {
+          addMessage('user', query);
+          
+          setTimeout(() => {
+              processUserMessage(query);
+          }, 600);
+      }
+      
+      function addMessage(sender, message) {
+          const chatMessages = document.getElementById('chatMessages');
+          const messageDiv = document.createElement('div');
+          messageDiv.className = `message ${sender}-message`;
+          
+          let avatar;
+          if (sender === 'user') {
+              avatar = '<div class="user-avatar">👤</div>';
+          } else {
+              avatar = '<div class="bot-avatar">🤖</div>';
+          }
+          
+          messageDiv.innerHTML = `
+              ${avatar}
+              <div class="message-content">${message}</div>
+          `;
+          
+          chatMessages.appendChild(messageDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      function processUserMessage(message) {
+          const lowerMessage = message.toLowerCase();
+          
+          // Check for doctor login help
+          if (lowerMessage.includes('doctor') && (lowerMessage.includes('login') || lowerMessage.includes('sign in'))) {
+              addMessage('bot', 'To login as a doctor, click on the "Login as Doctor" card and enter your registered email and password. If you\'re having trouble logging in, make sure you are using the correct credentials.<div class="suggested-queries"><button onclick="window.location.href=\'doctor-login.html\'">Go to doctor login</button><button onclick="handleSuggestedQuery(\'Forgot password\')">Forgot password</button></div>');
+          }
+          // Check for patient login help
+          else if (lowerMessage.includes('patient') && (lowerMessage.includes('login') || lowerMessage.includes('sign in'))) {
+              addMessage('bot', 'To login as a patient, click on the "Login as Patient" card and enter your username and password. Make sure you\'re using the credentials you provided during registration.<div class="suggested-queries"><button onclick="window.location.href=\'patient-login.html\'">Go to patient login</button><button onclick="handleSuggestedQuery(\'Forgot password\')">Forgot password</button></div>');
+          }
+          // Check for password issues
+          else if (lowerMessage.includes('forgot') || lowerMessage.includes('reset password') || lowerMessage.includes('can\'t login')) {
+              addMessage('bot', 'If you\'ve forgotten your password, you can reset it on the login page. For doctor accounts, please contact our admin team at admin@gmail.com. For patient accounts, use the "Forgot Password" link on the patient login page.<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Contact support\')">Contact support</button><button onclick="handleSuggestedQuery(\'No account yet\')">I don\'t have an account</button></div>');
+          }
+          // Check for registration info
+          else if (lowerMessage.includes('register') || lowerMessage.includes('sign up') || lowerMessage.includes('create account') || lowerMessage.includes('no account')) {
+              addMessage('bot', 'If you don\'t have an account yet, you\'ll need to register first. You can choose to register as either a patient or a doctor.<div class="suggested-queries"><button onclick="window.location.href=\'register-choice.html\'">Go to registration</button><button onclick="handleSuggestedQuery(\'Registration process\')">Registration process</button></div>');
+          }
+          // Check for registration process
+          else if (lowerMessage.includes('process') || lowerMessage.includes('how to')) {
+              addMessage('bot', 'The registration process is simple:<br>1. Choose your account type (doctor or patient)<br>2. Fill in your personal details<br>3. Create a secure password<br>4. Submit your registration<br><br>After registration, you can immediately log in with your new credentials.');
+          }
+          // Check for contact support
+          else if (lowerMessage.includes('contact') || lowerMessage.includes('support') || lowerMessage.includes('help')) {
+              addMessage('bot', 'For any technical issues or questions about your account, you can contact our support team at admin@gmail.com. Please include your full name and a detailed description of your issue so we can assist you more effectively.');
+          }
+          // Default response
+          else {
+              addMessage('bot', 'I\'m here to help you with the login process. What would you like assistance with?<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Doctor login help\')">Doctor login help</button><button onclick="handleSuggestedQuery(\'Patient login help\')">Patient login help</button><button onclick="handleSuggestedQuery(\'Forgot password\')">Forgot password</button></div>');
+          }
+      }
+  </script>
+</body>
+</html>

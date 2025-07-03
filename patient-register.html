@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 60px;
+        }
+
+        .title {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            color: #1e293b;
+            background: #f8fafc;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        .gender-group {
+            display: flex;
+            gap: 20px;
+            padding: 5px 0;
+        }
+
+        .gender-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gender-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Success Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #ecfdf5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: #10b981;
+        }
+
+        .modal-title {
+            color: #1e293b;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .modal-text {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .login-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+
+        .header {
+            padding: 15px;
+        }
+        
+        .back-btn {
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #1e293b;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #cbd5e1;
+            text-decoration: none;
+        }
+        
+        /* Contact Footer */
+        .contact-footer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .contact-footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Ensure suggested query buttons have proper styling */
+        .suggested-queries button {
+            background: #dbeafe !important; 
+            color: #3b82f6 !important;
+            border: none !important;
+            border-radius: 20px !important;
+            padding: 8px 12px !important;
+            font-size: 0.85em !important;
+            cursor: pointer !important;
+            text-align: left !important;
+            transition: all 0.2s ease !important;
+            margin-bottom: 4px !important;
+        }
+        
+        .suggested-queries button:hover {
+            background: #bfdbfe !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        /* Ensure the chatbot is properly positioned */
+        #chatbot-widget {
+            position: fixed !important;
+            bottom: 20px !important;
+            left: 20px !important;
+            z-index: 1001 !important;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/shared.css">
+</head>
+<body style="background-image: url('/images/pexels-health-bg.jpeg') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed !important;">
+    <div class="header" style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+        <a href="register-choice.html" class="back-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.2em;">←</span>
+            Back to Registration
+        </a>
+    </div>
+    <div class="container">
+        <h1 class="title">Patient Registration</h1>
+        <p class="subtitle">Create your account to get started</p>
+
+        <form id="register-form">
+            <div class="form-group">
+                <label for="name">Full Name*</label>
+                <input type="text" id="name" required placeholder="Enter your full name">
+                <div class="error-message" id="nameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username*</label>
+                <input type="text" id="username" required placeholder="Choose a username">
+                <div class="error-message" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password*</label>
+                <input type="password" id="password" required placeholder="Create a strong password">
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Gender*</label>
+                <div class="gender-group">
+                    <div class="gender-option">
+                        <input type="radio" id="male" name="gender" value="male" required>
+                        <label for="male">Male</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" id="female" name="gender" value="female">
+                        <label for="female">Female</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" id="other" name="gender" value="other">
+                        <label for="other">Other</label>
+                    </div>
+                </div>
+                <div class="error-message" id="genderError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address*</label>
+                <input type="email" id="email" required placeholder="Enter your email address">
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number*</label>
+                <input type="tel" id="mobile" required placeholder="Enter your mobile number">
+                <div class="error-message" id="mobileError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City*</label>
+                <input type="text" id="city" required placeholder="Enter your city">
+                <div class="error-message" id="cityError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth*</label>
+                <input type="date" id="dateOfBirth" required>
+                <div class="error-message" id="dobError"></div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="submit-btn">Register</button>
+            <div class="error-message" id="error-message"></div>
+        </form>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-icon">&#10003;</div>
+            <h2 class="modal-title">Registration Successful!</h2>
+            <p class="modal-text">Your account has been created successfully.</p>
+            <a href="login-choice.html" class="login-btn">Login Now</a>
+        </div>
+    </div>
+
+    <!-- AI Chatbot Widget -->
+    <div id="chatbot-widget" class="chatbot-collapsed" style="position: fixed; bottom: 20px; left: 20px; z-index: 1001; font-family: 'Inter', sans-serif; transition: all 0.3s ease;">
+        <div class="chatbot-button" onclick="toggleChatbot()" style="background: #3b82f6; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transition: all 0.3s ease;">
+            <span class="chatbot-icon" style="font-size: 1.5em;">💬</span>
+            <span class="chatbot-label" style="font-weight: 500;">HealthBot</span>
+        </div>
+        <div class="chatbot-container" style="display: none; position: absolute; bottom: 70px; left: 0; width: 350px; background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15); overflow: hidden; flex-direction: column; height: 450px;">
+            <div class="chatbot-header" style="padding: 15px; background: #3b82f6; color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1.1em;">HealthBot Assistant</h3>
+                <button onclick="toggleChatbot()" class="close-btn" style="background: none; border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 0; line-height: 1;">✕</button>
+            </div>
+            <div class="chatbot-messages" id="chatMessages" style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+                <div class="message bot-message" style="display: flex; gap: 10px; max-width: 85%; align-self: flex-start;">
+                    <div class="bot-avatar" style="background: #dbeafe; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2em;">🤖</div>
+                    <div class="message-content" style="background: #f1f5f9; padding: 12px; border-radius: 12px; font-size: 0.95em;">
+                        Hello! I'm HealthBot, your virtual healthcare assistant. How can I help you with your patient registration today?
+                        <div class="suggested-queries" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+                            <button onclick="handleSuggestedQuery('Registration help')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left; transition: all 0.2s ease;">Registration help</button>
+                            <button onclick="handleSuggestedQuery('Required information')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left; transition: all 0.2s ease;">Required information</button>
+                            <button onclick="handleSuggestedQuery('Already have an account')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left; transition: all 0.2s ease;">Already have an account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input" style="padding: 15px; display: flex; gap: 10px; border-top: 1px solid #e2e8f0;">
+                <input type="text" id="userInput" placeholder="Type your question here..." onkeypress="if(event.key === 'Enter') sendMessage()" style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95em;">
+                <button onclick="sendMessage()" style="background: #3b82f6; color: white; border: none; border-radius: 8px; padding: 10px 15px; font-weight: 500; cursor: pointer;">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('register-form');
+            const submitButton = document.getElementById('submit-btn');
+            const errorMessage = document.getElementById('error-message');
+            const successModal = document.getElementById('successModal');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset error messages
+                document.querySelectorAll('.error-message').forEach(error => {
+                    error.style.display = 'none';
+                });
+
+                // Validate form fields
+                let isValid = true;
+                
+                // Get form values
+                const name = document.getElementById('name').value.trim();
+                const username = document.getElementById('username').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const mobile = document.getElementById('mobile').value.trim();
+                const city = document.getElementById('city').value.trim();
+                const dateOfBirth = document.getElementById('dateOfBirth').value;
+                const password = document.getElementById('password').value;
+                
+                // Get selected gender
+                let gender = '';
+                const genderOptions = document.getElementsByName('gender');
+                for (const option of genderOptions) {
+                    if (option.checked) {
+                        gender = option.value;
+                        break;
+                    }
+                }
+
+                // Validation checks
+                if (!name) {
+                    document.getElementById('nameError').textContent = 'Please enter your full name';
+                    document.getElementById('nameError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!username) {
+                    document.getElementById('usernameError').textContent = 'Please choose a username';
+                    document.getElementById('usernameError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!gender) {
+                    document.getElementById('genderError').textContent = 'Please select your gender';
+                    document.getElementById('genderError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!email) {
+                    document.getElementById('emailError').textContent = 'Please enter your email address';
+                    document.getElementById('emailError').style.display = 'block';
+                    isValid = false;
+                } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+                    document.getElementById('emailError').textContent = 'Please enter a valid email address';
+                    document.getElementById('emailError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!mobile) {
+                    document.getElementById('mobileError').textContent = 'Please enter your mobile number';
+                    document.getElementById('mobileError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!city) {
+                    document.getElementById('cityError').textContent = 'Please enter your city';
+                    document.getElementById('cityError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!dateOfBirth) {
+                    document.getElementById('dobError').textContent = 'Please enter your date of birth';
+                    document.getElementById('dobError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!password) {
+                    document.getElementById('passwordError').textContent = 'Please enter a password';
+                    document.getElementById('passwordError').style.display = 'block';
+                    isValid = false;
+                } else if (password.length < 6) {
+                    document.getElementById('passwordError').textContent = 'Password must be at least 6 characters';
+                    document.getElementById('passwordError').style.display = 'block';
+                    isValid = false;
+                }
+
+                // Check if username already exists
+                const patients = JSON.parse(localStorage.getItem('patients') || '[]');
+                const existingPatient = patients.find(patient => patient.username === username);
+                if (existingPatient) {
+                    document.getElementById('usernameError').textContent = 'Username already taken. Please choose another.';
+                    document.getElementById('usernameError').style.display = 'block';
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    return; // Don't proceed if validation fails
+                }
+                
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Registering...';
+                
+                // Create patient object
+                const newPatient = {
+                    id: 'PAT' + Date.now(),
+                    name: name,
+                    username: username,
+                    gender: gender,
+                    email: email,
+                    mobile: mobile,
+                    city: city,
+                    dateOfBirth: dateOfBirth,
+                    password: password,
+                    registrationDate: new Date().toISOString().split('T')[0]
+                };
+                
+                // Save to localStorage
+                patients.push(newPatient);
+                localStorage.setItem('patients', JSON.stringify(patients));
+                
+                console.log('New patient registered:', newPatient);
+
+                // Show success message and redirect
+                setTimeout(() => {
+                    successModal.style.display = 'flex';
+                    
+                    // Reset form
+                    form.reset();
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Register';
+                }, 1000);
+            });
+        });
+
+        // Chatbot functionality
+        function toggleChatbot() {
+            const chatbotWidget = document.getElementById('chatbot-widget');
+            chatbotWidget.classList.toggle('chatbot-collapsed');
+            
+            // Show/hide chat container
+            const chatContainer = document.querySelector('.chatbot-container');
+            if (chatbotWidget.classList.contains('chatbot-collapsed')) {
+                chatContainer.style.display = 'none';
+            } else {
+                chatContainer.style.display = 'flex';
+            }
+        }
+        
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const userMessage = userInput.value.trim();
+            
+            if (userMessage === '') return;
+            
+            // Add user message to chat
+            addMessage('user', userMessage);
+            
+            // Clear input
+            userInput.value = '';
+            
+            // Process the message and respond
+            setTimeout(() => {
+                processUserMessage(userMessage);
+            }, 600);
+        }
+        
+        function handleSuggestedQuery(query) {
+            addMessage('user', query);
+            
+            setTimeout(() => {
+                processUserMessage(query);
+            }, 600);
+        }
+        
+        function addMessage(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            let avatar, messageStyle, avatarStyle;
+            if (sender === 'user') {
+                avatar = '<div class="user-avatar">👤</div>';
+                messageStyle = 'background: #3b82f6; color: white;';
+                avatarStyle = 'background: #3b82f6; color: white;';
+            } else {
+                avatar = '<div class="bot-avatar">🤖</div>';
+                messageStyle = 'background: #f1f5f9;';
+                avatarStyle = 'background: #dbeafe;';
+            }
+            
+            const style = sender === 'user' ? 
+                'display: flex; gap: 10px; max-width: 85%; align-self: flex-end; flex-direction: row-reverse;' :
+                'display: flex; gap: 10px; max-width: 85%; align-self: flex-start;';
+            
+            messageDiv.setAttribute('style', style);
+            
+            messageDiv.innerHTML = `
+                <div style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2em; ${avatarStyle}">${sender === 'user' ? '👤' : '🤖'}</div>
+                <div style="padding: 12px; border-radius: 12px; font-size: 0.95em; ${messageStyle}">${message}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function processUserMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('registration help') || lowerMessage.includes('help')) {
+                addMessage('bot', `
+                    To complete your registration:
+                    <ol style="margin-left: 20px; margin-top: 8px;">
+                        <li>Fill in all required fields marked with *</li>
+                        <li>Ensure your password is at least 6 characters</li>
+                        <li>Choose a username that's unique</li>
+                        <li>Submit the form when complete</li>
+                    </ol>
+                    <div class="suggested-queries" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+                        <button onclick="handleSuggestedQuery('Required information')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left;">Required information</button>
+                        <button onclick="handleSuggestedQuery('Password requirements')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left;">Password requirements</button>
+                    </div>
+                `);
+            } else if (lowerMessage.includes('required information') || lowerMessage.includes('required')) {
+                addMessage('bot', `
+                    The required information for registration includes:
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li>Full Name</li>
+                        <li>Username</li>
+                        <li>Password</li>
+                        <li>Gender</li>
+                        <li>Email Address</li>
+                        <li>Mobile Number</li>
+                        <li>City</li>
+                        <li>Date of Birth</li>
+                    </ul>
+                    All fields marked with * must be completed.
+                `);
+            } else if (lowerMessage.includes('already have an account') || lowerMessage.includes('login')) {
+                addMessage('bot', `
+                    If you already have an account, you can login instead:
+                    <ol style="margin-left: 20px; margin-top: 8px;">
+                        <li>Click on the "Login here" link at the bottom of this page</li>
+                        <li>Select "Patient Login" on the next screen</li>
+                        <li>Enter your username and password</li>
+                    </ol>
+                    <div class="suggested-queries" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+                        <button onclick="handleSuggestedQuery('Forgot password')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left;">Forgot password</button>
+                    </div>
+                `);
+            } else if (lowerMessage.includes('password requirements') || lowerMessage.includes('password')) {
+                addMessage('bot', `
+                    Password requirements:
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li>Minimum 6 characters</li>
+                        <li>We recommend including uppercase letters, numbers, and special characters for better security</li>
+                    </ul>
+                    Always create a unique password you don't use on other websites.
+                `);
+            } else if (lowerMessage.includes('forgot password')) {
+                addMessage('bot', `
+                    If you forgot your password:
+                    <ol style="margin-left: 20px; margin-top: 8px;">
+                        <li>Go to the login page</li>
+                        <li>Click on "Forgot password?"</li>
+                        <li>Follow the instructions to reset your password</li>
+                    </ol>
+                    For additional help, contact our support team.
+                `);
+            } else {
+                addMessage('bot', `
+                    I'm here to help with your registration process. Is there anything specific you'd like to know about?
+                    <div class="suggested-queries" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+                        <button onclick="handleSuggestedQuery('Registration help')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left;">Registration help</button>
+                        <button onclick="handleSuggestedQuery('Required information')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left;">Required information</button>
+                        <button onclick="handleSuggestedQuery('Already have an account')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left;">Already have an account</button>
+                    </div>
+                `);
+            }
+        }
+    </script>
+
+  <!-- Auto-injected scripts for blockchain and MongoDB integration -->
+  <script src="/public/js/api.js"></script>
+  <script src="/public/js/blockchain-widget.js"></script>
+  <script src="/public/js/init.js"></script>
+  <script src="/public/js/auth.js"></script>
+  
+  <!-- Contact Footer -->
+  <div class="contact-footer">
+      Need help? <a href="mailto:admin@gmail.com">Contact Admin</a>
+  </div>
+</body>
+</html>

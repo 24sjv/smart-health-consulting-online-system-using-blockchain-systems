@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Prescriptions</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .prescription-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .prescription-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .prescription-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .prescription-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+        }
+        
+        .medication-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="prescription-container">
+        <h1 class="prescription-title">Your Prescriptions</h1>
+        <div id="prescriptionsList"></div>
+        <button onclick="window.location.href='patient-dashboard.html'" class="back-btn">Back to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const patientId = localStorage.getItem('currentPatientId');
+            loadPrescriptions(patientId);
+        });
+        
+        function loadPrescriptions(patientId) {
+            if (!patientId) return;
+            
+            const prescriptionsList = document.getElementById('prescriptionsList');
+            prescriptionsList.innerHTML = '';
+            
+            // Check all prescription sources
+            const sources = {
+                'prescriptions': true,
+                'doctor-prescriptions': true, 
+                'appointments': item => item.prescription
+            };
+            
+            let allPrescriptions = [];
+            
+            Object.entries(sources).forEach(([source, filter]) => {
+                const items = JSON.parse(localStorage.getItem(source) || '[]');
+                
+                items.forEach(item => {
+                    const isPrescription = typeof filter === 'function' ? filter(item) : true;
+                    
+                    if(isPrescription && (item.patientId === patientId || item.patientID === patientId)) {
+                        if(item.prescription) {
+                            // If prescription is nested
+                            allPrescriptions.push({
+                                ...item.prescription,
+                                date: item.date || item.appointmentDate,
+                                doctorName: item.doctorName || 'Doctor'
+                            });
+                        } else {
+                            // Direct prescription object
+                            allPrescriptions.push(item);
+                        }
+                    }
+                });
+            });
+            
+            // Remove duplicates
+            const uniquePrescriptions = allPrescriptions.filter((v,i,a) => 
+                a.findIndex(t => (t.id === v.id)) === i
+            );
+            
+            if (uniquePrescriptions.length === 0) {
+                prescriptionsList.innerHTML = '<p style="text-align: center;">No prescriptions found.</p>';
+                return;
+            }
+            
+            uniquePrescriptions.forEach(prescription => {
+                const card = document.createElement('div');
+                card.className = 'prescription-card';
+                
+                const date = new Date(prescription.date).toLocaleDateString();
+                
+                let medicationsHtml = '';
+                if(prescription.medications && prescription.medications.length > 0) {
+                    medicationsHtml = `
+                        <h4>Medications:</h4>
+                        ${prescription.medications.map(med => `
+                            <div class="medication-item">
+                                <p><strong>${med.name}</strong> - ${med.dosage} ${med.frequency}</p>
+                            </div>
+                        `).join('')}
+                    `;
+                } else if(prescription.prescription) {
+                    medicationsHtml = `<p>${prescription.prescription}</p>`;
+                }
+                
+                card.innerHTML = `
+                    <div class="prescription-header">
+                        <h3>Prescription from ${prescription.doctorName || 'Doctor'}</h3>
+                        <p><strong>Date:</strong> ${date}</p>
+                    </div>
+                    ${medicationsHtml}
+                    ${prescription.instructions ? `<p><strong>Instructions:</strong> ${prescription.instructions}</p>` : ''}
+                `;
+                
+                prescriptionsList.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html> 

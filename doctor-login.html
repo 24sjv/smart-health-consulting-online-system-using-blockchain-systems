@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Login</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/shared.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f1f5f9;
+        }
+
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #1e293b;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #64748b;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            color: #1e293b;
+            background: white;
+            height: 48px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #2563eb;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .back-link:hover {
+            color: #3b82f6;
+        }
+
+        .error-message {
+            color: #ef4444;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .page-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            z-index: 1000;
+        }
+
+        .header {
+            padding: 15px;
+        }
+        
+        .back-btn {
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #1e293b;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+        
+        /* Contact Footer */
+        .contact-footer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .contact-footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Chatbot Widget Styles */
+        #chatbot-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1001;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-collapsed .chatbot-container {
+            display: none;
+        }
+        
+        .chatbot-button {
+            background: #3b82f6;
+            color: white;
+            border-radius: 50px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .chatbot-icon {
+            font-size: 1.5em;
+        }
+        
+        .chatbot-label {
+            font-weight: 500;
+        }
+        
+        .chatbot-container {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 450px;
+        }
+        
+        .chatbot-header {
+            padding: 15px;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 85%;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .bot-avatar {
+            background: #dbeafe;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        
+        .user-avatar {
+            background: #3b82f6;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+        }
+        
+        .message-content {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.95em;
+        }
+        
+        .user-message .message-content {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .chatbot-input {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+        
+        .chatbot-input button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .chatbot-input button:hover {
+            background: #2563eb;
+        }
+        
+        .suggested-queries {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .suggested-queries button {
+            background: #dbeafe;
+            color: #3b82f6;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 0.85em;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+        
+        .suggested-queries button:hover {
+            background: #bfdbfe;
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-container {
+                width: 300px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body style="background-image: url('/images/pexels-health-bg.jpeg') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed !important;">
+    <div class="header" style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+        <a href="login-choice.html" class="back-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.2em;">←</span>
+            Back to Login Options
+        </a>
+    </div>
+    
+    <div class="login-container">
+        <div class="header">
+            <h1>Doctor Login</h1>
+            <p>Welcome back! Please login to your account</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+            <div id="errorMessage" class="error-message">Invalid email or password</div>
+        </form>
+
+        <a href="login-choice.html" class="back-link">← Back to Login Choice</a>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Get doctors from localStorage
+            const doctors = JSON.parse(localStorage.getItem('doctors') || '[]');
+            
+            // For debugging
+            console.log('Login attempt:', { email, password: '***' });
+            console.log('Available doctors:', doctors.map(d => ({ ...d, password: '***' })));
+            
+            // Find matching doctor
+            const doctor = doctors.find(doc => 
+                doc.email === email && doc.password === password
+            );
+            
+            if (doctor) {
+                // Store logged in doctor info (except password)
+                const doctorInfo = { ...doctor };
+                delete doctorInfo.password;
+                localStorage.setItem('currentDoctor', JSON.stringify(doctorInfo));
+                
+                // For debugging
+                console.log('Login successful:', { ...doctorInfo });
+                
+                // Redirect to doctor dashboard
+                window.location.href = 'doctor-dashboard.html';
+            } else {
+                // Show error message
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.textContent = 'Invalid email or password';
+                errorMessage.style.display = 'block';
+                
+                // Clear password field
+                document.getElementById('password').value = '';
+                
+                // Hide error message after 3 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+
+  <!-- Auto-injected scripts for blockchain and MongoDB integration -->
+  <script src="/public/js/api.js"></script>
+  <script src="/public/js/blockchain-widget.js"></script>
+  <script src="/public/js/init.js"></script>
+  <script src="/public/js/auth.js"></script>
+  
+  <!-- Contact Footer -->
+  <div class="contact-footer">
+      Need help? <a href="mailto:admin@gmail.com">Contact Admin</a>
+  </div>
+
+  <!-- AI Chatbot Widget -->
+  <div id="chatbot-widget" class="chatbot-collapsed">
+      <div class="chatbot-button" onclick="toggleChatbot()">
+          <span class="chatbot-icon">💬</span>
+          <span class="chatbot-label">HealthBot</span>
+      </div>
+      <div class="chatbot-container">
+          <div class="chatbot-header">
+              <h3>HealthBot Assistant</h3>
+              <button onclick="toggleChatbot()" class="close-btn">✕</button>
+          </div>
+          <div class="chatbot-messages" id="chatMessages">
+              <div class="message bot-message">
+                  <div class="bot-avatar">🤖</div>
+                  <div class="message-content">
+                      Hello! I'm HealthBot, your virtual healthcare assistant. How can I help you today?
+                      <div class="suggested-queries">
+                          <button onclick="handleSuggestedQuery('Login help')">Login help</button>
+                          <button onclick="handleSuggestedQuery('Forgot password')">Forgot password</button>
+                          <button onclick="handleSuggestedQuery('Registration information')">Registration information</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="chatbot-input">
+              <input type="text" id="userInput" placeholder="Type your question here..." onkeypress="if(event.key === 'Enter') sendMessage()">
+              <button onclick="sendMessage()">Send</button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Add the chatbot widget JS before the closing body tag -->
+  <script>
+      // Chatbot functionality
+      function toggleChatbot() {
+          const chatbotWidget = document.getElementById('chatbot-widget');
+          chatbotWidget.classList.toggle('chatbot-collapsed');
+      }
+      
+      function sendMessage() {
+          const userInput = document.getElementById('userInput');
+          const userMessage = userInput.value.trim();
+          
+          if (userMessage === '') return;
+          
+          // Add user message to chat
+          addMessage('user', userMessage);
+          
+          // Clear input
+          userInput.value = '';
+          
+          // Process the message and respond
+          setTimeout(() => {
+              processUserMessage(userMessage);
+          }, 600);
+      }
+      
+      function handleSuggestedQuery(query) {
+          addMessage('user', query);
+          
+          setTimeout(() => {
+              processUserMessage(query);
+          }, 600);
+      }
+      
+      function addMessage(sender, message) {
+          const chatMessages = document.getElementById('chatMessages');
+          const messageDiv = document.createElement('div');
+          messageDiv.className = `message ${sender}-message`;
+          
+          let avatar;
+          if (sender === 'user') {
+              avatar = '<div class="user-avatar">👤</div>';
+          } else {
+              avatar = '<div class="bot-avatar">🤖</div>';
+          }
+          
+          messageDiv.innerHTML = `
+              ${avatar}
+              <div class="message-content">${message}</div>
+          `;
+          
+          chatMessages.appendChild(messageDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      function processUserMessage(message) {
+          const lowerMessage = message.toLowerCase();
+          
+          // Check for login help
+          if (lowerMessage.includes('login') || lowerMessage.includes('sign in')) {
+              addMessage('bot', 'To login as a doctor, please enter your registered email and password. If you\'re having trouble logging in, make sure you\'re using the correct credentials.<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Forgot password\')">I forgot my password</button><button onclick="handleSuggestedQuery(\'I\'m not registered\')">I\'m not registered yet</button></div>');
+          }
+          // Check for password issues
+          else if (lowerMessage.includes('forgot password') || lowerMessage.includes('reset password')) {
+              addMessage('bot', 'If you\'ve forgotten your password, please contact our admin team at admin@gmail.com. For security reasons, doctor accounts require administrative assistance for password resets.<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Contact admin\')">Contact admin</button><button onclick="handleSuggestedQuery(\'Try to login again\')">Try to login again</button></div>');
+          }
+          // Check for registration info
+          else if (lowerMessage.includes('registration') || lowerMessage.includes('register') || lowerMessage.includes('sign up')) {
+              addMessage('bot', 'To register as a doctor, please use the registration form available in the registration page. You\'ll need to provide your professional credentials and wait for admin approval before your account is activated.<div class="suggested-queries"><button onclick="window.location.href=\'register-choice.html\'">Go to registration</button><button onclick="handleSuggestedQuery(\'Registration requirements\')">Registration requirements</button></div>');
+          }
+          // Check for contact admin
+          else if (lowerMessage.includes('contact admin') || lowerMessage.includes('admin') || lowerMessage.includes('support')) {
+              addMessage('bot', 'You can contact our admin team at admin@gmail.com. Please include your full name, email address, and a detailed description of your issue so we can assist you more effectively.');
+          }
+          // Check for registration requirements
+          else if (lowerMessage.includes('requirements')) {
+              addMessage('bot', 'To register as a doctor, you\'ll need:<br>- Full name and contact information<br>- Medical specialization<br>- Professional experience details<br>- Qualification information<br>- Professional resume (optional)<br><br>After registration, your account will be reviewed by our admin team before activation.');
+          }
+          // Default response
+          else {
+              addMessage('bot', 'I\'m here to help with doctor login and registration. What would you like assistance with?<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Login help\')">Login help</button><button onclick="handleSuggestedQuery(\'Forgot password\')">Forgot password</button><button onclick="handleSuggestedQuery(\'Registration information\')">Registration information</button></div>');
+          }
+      }
+  </script>
+</body>
+</html>

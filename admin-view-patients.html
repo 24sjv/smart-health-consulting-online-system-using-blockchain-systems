@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Patients - Admin Panel</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/shared.css">
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+        }
+
+        /* Header Styles */
+        .header {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            padding: 8px 15px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            padding: 8px 15px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Table Styles */
+        .table-container {
+            margin: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        td {
+            color: #334155;
+        }
+
+        .status-active {
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .status-inactive {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+
+        .edit-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .disease-tag {
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>All Patients</h1>
+        <div style="display: flex; gap: 10px;">
+            <a href="admin-controls.html" class="back-btn">Back to Dashboard</a>
+            <a href="index.html" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" 
+               placeholder="Search by name, email, phone, or condition...">
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Disease/Condition</th>
+                    <th>Registration Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="patientsTableBody">
+                <!-- Patient data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Check authentication immediately before doing anything else
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            console.log('Not authenticated, redirecting to login');
+            window.location.href = 'admin-login.html';
+        }
+
+        // Load and display patients when page loads
+        document.addEventListener('DOMContentLoaded', loadPatients);
+
+        function loadPatients() {
+            const patients = JSON.parse(localStorage.getItem('patients') || '[]');
+            const tableBody = document.getElementById('patientsTableBody');
+            tableBody.innerHTML = '';
+
+            if (patients.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">No patients registered yet</td></tr>`;
+                return;
+            }
+
+            patients.forEach(patient => {
+                const row = document.createElement('tr');
+                
+                // Format date of birth for display
+                const dob = patient.dateOfBirth ? new Date(patient.dateOfBirth).toLocaleDateString() : 'Not provided';
+                
+                // Create table row with patient details
+                row.innerHTML = `
+                    <td>${patient.id || 'N/A'}</td>
+                    <td>${patient.name || 'N/A'}</td>
+                    <td>${patient.email || 'N/A'}</td>
+                    <td>${patient.mobile || 'N/A'}</td>
+                    <td><span class="disease-tag">General checkup</span></td>
+                    <td>${patient.registrationDate || 'N/A'}</td>
+                    <td><span class="status-active">Active</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editPatient('${patient.id}')">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deletePatient('${patient.id}')">Delete</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#patientsTableBody tr');
+            
+            rows.forEach(row => {
+                let found = false;
+                const cells = row.querySelectorAll('td');
+                
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(searchValue)) {
+                        found = true;
+                    }
+                });
+                
+                row.style.display = found ? '' : 'none';
+            });
+        });
+
+        // Function to delete a patient
+        function deletePatient(patientId) {
+            if (confirm('Are you sure you want to delete this patient?')) {
+                let patients = JSON.parse(localStorage.getItem('patients') || '[]');
+                patients = patients.filter(patient => patient.id !== patientId);
+                localStorage.setItem('patients', JSON.stringify(patients));
+                
+                // Reload the table
+                loadPatients();
+                
+                // Update patient count in admin controls
+                console.log('Patient deleted successfully');
+            }
+        }
+
+        // Function to edit a patient (placeholder for now)
+        function editPatient(patientId) {
+            alert('Edit functionality will be implemented in future updates');
+        }
+    </script>
+
+  <!-- Auto-injected scripts for blockchain and MongoDB integration -->
+  <script src="/public/js/api.js"></script>
+  <script src="/public/js/blockchain-widget.js"></script>
+  <script src="/public/js/init.js"></script>
+  <script src="/public/js/auth.js"></script>
+</body>
+</html>

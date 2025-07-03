@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/shared.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .doctor-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .doctor-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .doctor-details h1 {
+            font-size: 1.2rem;
+            color: #1e293b;
+        }
+
+        .doctor-details p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .stat-card h3 {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .number {
+            color: #1e293b;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .appointments-section {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            color: #1e293b;
+            font-size: 1.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        td {
+            color: #1e293b;
+        }
+
+        .status-pill {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-upcoming {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .appointment-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .appointment-card h3 {
+            color: #1e293b;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .appointment-card p {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .appointment-card .patient-details {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .accept-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .accept-btn:hover {
+            background: #15803d;
+        }
+
+        .decline-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .decline-btn:hover {
+            background: #b91c1c;
+        }
+
+        .prescription-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .prescription-btn:hover {
+            background: #2563eb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .modal-title {
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .prescription-form textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .prescription-form button {
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .prescription-form button:hover {
+            background: #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: 0.75rem;
+            }
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .modal-btn.confirm {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Video Call styles */
+        .video-call-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            height: 240px;
+            background: #000;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            z-index: 1000;
+        }
+        
+        .remote-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .local-video {
+            position: absolute;
+            width: 80px;
+            height: 120px;
+            bottom: 10px;
+            right: 10px;
+            border-radius: 8px;
+            border: 2px solid white;
+            object-fit: cover;
+            z-index: 1001;
+        }
+        
+        .video-call-btn {
+            display: flex !important;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1002;
+        }
+        
+        .video-call-container.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            z-index: 9999;
+        }
+        
+        .call-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 24px;
+            background: rgba(0,0,0,0.5);
+            z-index: 1002;
+        }
+        
+        .call-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #444;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .call-btn:hover {
+            background: #666;
+        }
+        
+        .call-btn.end-call {
+            background: #e53935;
+        }
+        
+        .call-btn.end-call:hover {
+            background: #c62828;
+        }
+    </style>
+</head>
+<body style="background-image: url('/images/pexels-health-bg.jpeg') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed !important;">
+    <div class="header">
+        <div class="doctor-info">
+            <div class="doctor-avatar" id="doctorInitials"></div>
+            <div class="doctor-details">
+                <h1 id="doctorName">Dr. Loading...</h1>
+                <p id="doctorSpecialization">Loading...</p>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button onclick="openHospitalFinder()" class="btn" style="background-color: #0ea5e9; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">🔍</span>
+                Find Hospitals
+            </button>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <!-- Add video call container after header, hidden by default -->
+    <div id="videoCallContainer" class="video-call-container" style="display: none;">
+        <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
+        <video id="localVideo" class="local-video" autoplay playsinline muted></video>
+        <button id="fullscreenToggle" class="fullscreen-btn">
+            <span class="material-icons">fullscreen</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Patients</h3>
+                <div class="number" id="totalPatients">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Today's Appointments</h3>
+                <div class="number" id="todayAppointments">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Appointments</h3>
+                <div class="number" id="totalAppointments">0</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(to right, #0284c7, #0ea5e9); color: white; cursor: pointer;" onclick="openHospitalFinder()">
+                <h3>Find Nearby Hospitals</h3>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 5px;">
+                    <span style="font-size: 1.5rem;">🔍</span>
+                    <span>For Patient Referrals</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="appointments-section">
+            <div class="section-header">
+                <h2>Appointment Management</h2>
+            </div>
+            <div id="noAppointmentsMessage" style="display: none; text-align: center; padding: 20px;">
+                <h3>No appointments available</h3>
+                <p>You don't have any appointments assigned to you yet.</p>
+            </div>
+            <div id="appointmentsContainer">
+                <!-- Appointments will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Prescription Modal -->
+    <div id="prescriptionModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title">Write Prescription</h2>
+            <div class="prescription-form">
+                <div style="margin-bottom: 15px;">
+                    <h3 id="prescriptionPatientName">Patient Name</h3>
+                    <p id="prescriptionAppointmentDetails">Appointment Details</p>
+                </div>
+                
+                <!-- Disease Analysis Section -->
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="symptomsInput" placeholder="Enter symptoms (comma separated)" style="flex: 1; padding: 10px;">
+                        <button id="analyzeBtn" style="background: #0284c7; color: white; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer;">Analyze</button>
+                    </div>
+                    <div id="analysisResults" style="background: #f0f9ff; border-radius: 8px; padding: 10px; display: none; margin-bottom: 10px;">
+                        <h4 style="color: #0369a1; margin-bottom: 5px;">Disease Analysis Results</h4>
+                        <div id="resultsContent"></div>
+                    </div>
+                </div>
+                
+                <textarea id="prescriptionText" placeholder="Write prescription details here..."></textarea>
+                <input type="hidden" id="prescriptionAppointmentId" value="">
+                <button onclick="submitPrescription()">Submit Prescription</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add modal dialog -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout and go to home?</p>
+            <div class="modal-actions">
+                <button onclick="confirmLogout()" class="modal-btn confirm">Yes, Logout</button>
+                <button onclick="cancelLogout()" class="modal-btn cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if doctor is logged in
+        function checkAuth() {
+            const currentDoctor = JSON.parse(localStorage.getItem('currentDoctor'));
+            if (!currentDoctor) {
+                window.location.href = 'doctor-login.html';
+                return;
+            }
+            return currentDoctor;
+        }
+
+        // Load doctor info
+        function loadDoctorInfo() {
+            const doctor = checkAuth();
+            if (!doctor) return;
+
+            // Set doctor name and specialization
+            document.getElementById('doctorName').textContent = doctor.fullName;
+            document.getElementById('doctorSpecialization').textContent = doctor.specialization;
+
+            // Set initials in avatar
+            const initials = doctor.fullName
+                .split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase();
+            document.getElementById('doctorInitials').textContent = initials;
+        }
+
+        // Load appointments
+        function loadAppointments() {
+            const doctor = checkAuth();
+            if (!doctor) return;
+
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            
+            // Get all appointments that are assigned to this doctor or unassigned
+            const relevantAppointments = appointments.filter(app => 
+                app.doctorId === doctor.id || !app.doctorId);
+
+            // Update stats
+            const today = new Date().toISOString().split('T')[0];
+            const todayAppointments = relevantAppointments.filter(app => 
+                app.appointmentDate === today && app.doctorId === doctor.id);
+
+            document.getElementById('totalAppointments').textContent = 
+                relevantAppointments.filter(app => app.doctorId === doctor.id).length;
+            document.getElementById('todayAppointments').textContent = todayAppointments.length;
+
+            // Get unique patients
+            const uniquePatients = new Set(relevantAppointments
+                .filter(app => app.doctorId === doctor.id)
+                .map(app => app.patientId));
+            document.getElementById('totalPatients').textContent = uniquePatients.size;
+
+            // Populate appointments container
+            const appointmentsContainer = document.getElementById('appointmentsContainer');
+            appointmentsContainer.innerHTML = '';
+
+            if (relevantAppointments.length === 0) {
+                document.getElementById('noAppointmentsMessage').style.display = 'block';
+                return;
+            } 
+            
+            document.getElementById('noAppointmentsMessage').style.display = 'none';
+
+            // Group appointments by status
+            const pending = relevantAppointments.filter(app => 
+                !app.doctorId || (app.doctorId === doctor.id && app.status === 'Scheduled'));
+            const accepted = relevantAppointments.filter(app => 
+                app.doctorId === doctor.id && app.status === 'Accepted');
+            const completed = relevantAppointments.filter(app => 
+                app.doctorId === doctor.id && app.status === 'Completed');
+
+            // Show pending appointments first
+            if (pending.length > 0) {
+                appointmentsContainer.innerHTML += `
+                    <h3 style="margin: 20px 0 10px; color: #3b82f6;">Pending Appointments</h3>
+                `;
+
+                pending.forEach(appointment => createAppointmentCard(appointment, 'pending'));
+            }
+
+            // Show accepted appointments
+            if (accepted.length > 0) {
+                appointmentsContainer.innerHTML += `
+                    <h3 style="margin: 20px 0 10px; color: #16a34a;">Accepted Appointments</h3>
+                `;
+
+                accepted.forEach(appointment => createAppointmentCard(appointment, 'accepted'));
+            }
+
+            // Show completed appointments
+            if (completed.length > 0) {
+                appointmentsContainer.innerHTML += `
+                    <h3 style="margin: 20px 0 10px; color: #64748b;">Completed Appointments</h3>
+                `;
+
+                completed.forEach(appointment => createAppointmentCard(appointment, 'completed'));
+            }
+        }
+
+        // Create appointment card
+        function createAppointmentCard(appointment, type) {
+            const appointmentsContainer = document.getElementById('appointmentsContainer');
+            const patients = JSON.parse(localStorage.getItem('patients') || '[]');
+            const patient = patients.find(p => p.id === appointment.patientId) || {};
+
+            // Format date
+            const appointmentDate = appointment.appointmentDate ? 
+                new Date(appointment.appointmentDate) : new Date();
+            const formattedDate = appointmentDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const hasPrescription = appointment.prescription ? true : false;
+
+            let actionsHtml = '';
+            
+            if (type === 'pending' && !appointment.doctorId) {
+                // Show accept/decline options for new appointments
+                actionsHtml = `
+                    <div class="appointment-actions">
+                        <button onclick="acceptAppointment('${appointment.id}')" class="action-btn accept-btn">Accept</button>
+                        <button onclick="declineAppointment('${appointment.id}')" class="action-btn decline-btn">Decline</button>
+                    </div>
+                `;
+            } else if (type === 'pending' || type === 'accepted') {
+                // Show complete, prescription, and video call options for accepted appointments
+                actionsHtml = `
+                    <div class="appointment-actions">
+                        <button onclick="completeAppointment('${appointment.id}')" class="action-btn accept-btn">Mark Completed</button>
+                        <button onclick="openPrescriptionModal('${appointment.id}')" class="action-btn prescription-btn">
+                            ${hasPrescription ? 'Edit Prescription' : 'Write Prescription'}
+                        </button>
+                        <button onclick="startVideoCall('${appointment.id}', '${appointment.patientId}')" class="action-btn video-call-btn">
+                            <span class="material-icons">videocam</span> Video Call
+                        </button>
+                    </div>
+                `;
+            } else if (type === 'completed' && !hasPrescription) {
+                // Show only prescription option for completed appointments without prescription
+                actionsHtml = `
+                    <div class="appointment-actions">
+                        <button onclick="openPrescriptionModal('${appointment.id}')" class="action-btn prescription-btn">Write Prescription</button>
+                    </div>
+                `;
+            } else if (type === 'completed' && hasPrescription) {
+                // Show view/edit prescription for completed appointments with prescription
+                actionsHtml = `
+                    <div class="appointment-actions">
+                        <button onclick="openPrescriptionModal('${appointment.id}')" class="action-btn prescription-btn">Edit Prescription</button>
+                    </div>
+                `;
+            }
+
+            const prescriptionNote = hasPrescription ? 
+                `<p><strong>Prescription:</strong> ${appointment.prescription.substring(0, 50)}...</p>` : '';
+
+            const statusClass = appointment.status ? appointment.status.toLowerCase() : 'scheduled';
+            const statusText = appointment.status || 'Scheduled';
+
+            const card = `
+                <div class="appointment-card">
+                    <div class="patient-details">
+                        <h3>${patient.firstName || ''} ${patient.lastName || appointment.fullName || ''}</h3>
+                        <p><strong>Date:</strong> ${formattedDate}</p>
+                        <p><strong>Time:</strong> ${appointment.appointmentTime || 'Not specified'}</p>
+                        <p><strong>Patient ID:</strong> ${appointment.patientId || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${patient.phone || appointment.phone || 'Not provided'}</p>
+                        <p><strong>Disease/Condition:</strong> ${appointment.disease || 'Not specified'}</p>
+                        <p><strong>Symptoms:</strong> ${appointment.symptoms || 'Not provided'}</p>
+                        <p><strong>Status:</strong> <span class="status-pill status-${statusClass}">${statusText}</span></p>
+                        ${prescriptionNote}
+                    </div>
+                    ${actionsHtml}
+                </div>
+            `;
+            
+            appointmentsContainer.innerHTML += card;
+        }
+
+        // Accept an appointment
+        function acceptAppointment(appointmentId) {
+            const doctor = checkAuth();
+            if (!doctor || !appointmentId) return;
+
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const appointmentIndex = appointments.findIndex(a => a.id === appointmentId);
+            
+            if (appointmentIndex !== -1) {
+                appointments[appointmentIndex].doctorId = doctor.id;
+                appointments[appointmentIndex].doctorName = doctor.fullName;
+                appointments[appointmentIndex].status = 'Accepted';
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                
+                // Refresh the display
+                loadAppointments();
+            }
+        }
+
+        // Decline an appointment
+        function declineAppointment(appointmentId) {
+            if (!appointmentId) return;
+            
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const appointmentIndex = appointments.findIndex(a => a.id === appointmentId);
+            
+            if (appointmentIndex !== -1) {
+                appointments[appointmentIndex].status = 'Declined';
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                
+                // Refresh the display
+                loadAppointments();
+            }
+        }
+
+        // Mark appointment as completed
+        function completeAppointment(appointmentId) {
+            if (!appointmentId) return;
+            
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const appointmentIndex = appointments.findIndex(a => a.id === appointmentId);
+            
+            if (appointmentIndex !== -1) {
+                appointments[appointmentIndex].status = 'Completed';
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                
+                // Refresh the display
+                loadAppointments();
+            }
+        }
+
+        // Open prescription modal
+        function openPrescriptionModal(appointmentId) {
+            if (!appointmentId) return;
+            
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const appointment = appointments.find(a => a.id === appointmentId);
+            
+            if (!appointment) return;
+            
+            // Find patient details
+            const patients = JSON.parse(localStorage.getItem('patients') || '[]');
+            const patient = patients.find(p => p.id === appointment.patientId) || {};
+            
+            // Set modal details
+            document.getElementById('prescriptionPatientName').textContent = 
+                `${patient.firstName || ''} ${patient.lastName || appointment.fullName || ''}`;
+            
+            document.getElementById('prescriptionAppointmentDetails').textContent = 
+                `Appointment for ${appointment.disease || 'consultation'} on ${appointment.appointmentDate || 'scheduled date'}`;
+            
+            document.getElementById('prescriptionAppointmentId').value = appointmentId;
+            
+            // Set existing prescription if available
+            document.getElementById('prescriptionText').value = appointment.prescription || '';
+            
+            // Show modal
+            document.getElementById('prescriptionModal').style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('prescriptionModal').style.display = 'none';
+        }
+
+        // Submit prescription
+        function submitPrescription() {
+            const appointmentId = document.getElementById('prescriptionAppointmentId').value;
+            const prescription = document.getElementById('prescriptionText').value;
+            
+            if (!appointmentId || !prescription) return;
+            
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const appointmentIndex = appointments.findIndex(a => a.id === appointmentId);
+            
+            if (appointmentIndex !== -1) {
+                appointments[appointmentIndex].prescription = prescription;
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                
+                // Also save the prescription to the dedicated prescriptions array
+                const prescriptions = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+                prescriptions.push({
+                    id: 'PRESC-' + Date.now(),
+                    patientId: appointments[appointmentIndex].patientId,
+                    doctorId: localStorage.getItem('currentDoctorId'),
+                    date: new Date().toISOString(),
+                    prescription: prescription
+                });
+                localStorage.setItem('prescriptions', JSON.stringify(prescriptions));
+                
+                alert('Prescription saved successfully!');
+                closeModal();
+                loadAppointments();
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentDoctor');
+            window.location.href = 'login-choice.html';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('prescriptionModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDoctorInfo();
+            loadAppointments();
+        });
+
+        function handleHomeClick() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
+
+        function confirmLogout() {
+            document.getElementById('logoutModal').style.display = 'none';
+            logout();
+            window.location.href = '/index.html';
+        }
+
+        function cancelLogout() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            // Clear doctor session data
+            localStorage.removeItem('currentDoctorId');
+            localStorage.removeItem('currentDoctorName');
+            // Redirect to index
+            window.location.href = '/index.html';
+        }
+        
+        // Chatbot functionality
+        function toggleChatbot() {
+            const chatbotWidget = document.getElementById('chatbot-widget');
+            chatbotWidget.classList.toggle('chatbot-collapsed');
+            
+            // Show/hide chat container
+            const chatContainer = document.querySelector('.chatbot-container');
+            if (chatbotWidget.classList.contains('chatbot-collapsed')) {
+                chatContainer.style.display = 'none';
+            } else {
+                chatContainer.style.display = 'flex';
+                
+                // Check AI status if not already done
+                checkAssistantStatus();
+            }
+        }
+        
+        let assistantStatus = {
+            checked: false,
+            usingLocalModel: false
+        };
+        
+        async function checkAssistantStatus() {
+            if (assistantStatus.checked) return;
+            
+            try {
+                // Only perform this check once
+                assistantStatus.checked = true;
+                
+                // Get status from API
+                const response = await window.API.assistant.getStatus();
+                
+                if (response.localModelEnabled && response.localModelReady) {
+                    // Show indicator that we're using local AI
+                    assistantStatus.usingLocalModel = true;
+                    
+                    // Add a status indicator to the chatbot header
+                    const header = document.querySelector('.chatbot-header h3');
+                    header.innerHTML = 'HealthBot Assistant <span style="font-size: 0.7em; background: #dbeafe; color: #3b82f6; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">Local AI</span>';
+                    
+                    // Add an initial message about local AI
+                    setTimeout(() => {
+                        addMessage('bot', 'I\'m running on a local AI model. Your data stays on your device for enhanced privacy.');
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('Failed to check assistant status:', error);
+            }
+        }
+        
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const userMessage = userInput.value.trim();
+            
+            if (userMessage === '') return;
+            
+            // Add user message to chat
+            addMessage('user', userMessage);
+            
+            // Clear input
+            userInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Get doctor data for context
+                const doctor = JSON.parse(localStorage.getItem('currentDoctor') || '{}');
+                
+                // Context object for the chatbot
+                const context = {
+                    doctorId: doctor.id,
+                    doctorName: doctor.fullName,
+                    specialization: doctor.specialization,
+                    page: 'doctor-dashboard'
+                };
+                
+                // First try to use the AI assistant if available
+                try {
+                    const aiResult = await window.API.assistant.chat(userMessage, 'doctor', context);
+                    hideTypingIndicator();
+                    processAndDisplayResponse(aiResult.response);
+                    return;
+                } catch (aiError) {
+                    console.log('AI assistant unavailable, falling back to rule-based chatbot');
+                    // Continue to rule-based chatbot if AI fails
+                }
+                
+                // Fall back to rule-based chatbot
+                const result = await window.API.chatbot.sendMessage(userMessage, 'doctor', context);
+                
+                // Hide typing indicator
+                hideTypingIndicator();
+                
+                if (result.success) {
+                    // Add bot response to chat
+                    addMessage('bot', result.response, result.isPersonalized);
+                    
+                    // Add suggestion buttons if available
+                    if (result.suggestions && result.suggestions.length > 0) {
+                        addSuggestions(result.suggestions);
+                    }
+                } else {
+                    throw new Error(result.message || 'Failed to get response');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                hideTypingIndicator();
+                
+                // Show error message
+                addMessage('bot', "I'm sorry, I'm having trouble responding right now. Please try again later.");
+            }
+        }
+        
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'message bot-message';
+            typingDiv.innerHTML = `
+                <div class="bot-avatar" style="background: #dbeafe; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2em;">🤖</div>
+                <div class="message-content" style="background: #f1f5f9; padding: 12px; border-radius: 12px; font-size: 0.95em;">
+                    <div class="typing-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add styles for typing animation if not already present
+            if (!document.getElementById('typing-styles')) {
+                const style = document.createElement('style');
+                style.id = 'typing-styles';
+                style.textContent = `
+                    .typing-dots { display: flex; gap: 4px; }
+                    .dot { width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; opacity: 0.6; animation: typingAnimation 1.4s infinite ease-in-out; }
+                    .dot:nth-child(1) { animation-delay: 0s; }
+                    .dot:nth-child(2) { animation-delay: 0.2s; }
+                    .dot:nth-child(3) { animation-delay: 0.4s; }
+                    @keyframes typingAnimation {
+                        0%, 100% { transform: translateY(0); }
+                        50% { transform: translateY(-5px); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function processAndDisplayResponse(response) {
+            // Check if response contains suggested queries
+            const hasSuggestions = response.includes('would you like') || 
+                                   response.includes('can I help') || 
+                                   response.includes('How can I assist');
+            
+            // Format with buttons if needed
+            let formattedResponse = response;
+            
+            // Add suggestive buttons if none in the response
+            if (!hasSuggestions) {
+                const suggestions = getSuggestionsByTopic(response);
+                if (suggestions.length > 0) {
+                    formattedResponse += `<div class="suggested-queries">
+                        ${suggestions.map(s => `<button onclick="handleSuggestedQuery('${s}')">${s}</button>`).join('')}
+                    </div>`;
+                }
+            }
+            
+            addMessage('bot', formattedResponse);
+        }
+        
+        function getSuggestionsByTopic(response) {
+            // Generate relevant suggestions based on response content
+            const lowerResponse = response.toLowerCase();
+            
+            if (lowerResponse.includes('appointment') || lowerResponse.includes('patient')) {
+                return ['View appointments', 'Accept appointment', 'Complete appointment'];
+            } else if (lowerResponse.includes('prescription') || lowerResponse.includes('medicine')) {
+                return ['Write prescription', 'Medication references', 'Common prescriptions'];
+            } else if (lowerResponse.includes('profile') || lowerResponse.includes('account')) {
+                return ['Update availability', 'View profile'];
+            } else {
+                return ['Manage appointments', 'Create prescription', 'Patient history'];
+            }
+        }
+        
+        function handleSuggestedQuery(query) {
+            addMessage('user', query);
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Process with API or fallback
+            if (assistantStatus.checked && !assistantStatus.usingLocalModel) {
+                // Just use the local processing for simplicity
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    processUserMessage(query);
+                }, 800);
+            } else {
+                sendMessage(query);
+            }
+        }
+        
+        function addMessage(sender, message, isPersonalized = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            let avatar;
+            if (sender === 'user') {
+                avatar = '<div class="user-avatar">👤</div>';
+            } else {
+                avatar = '<div class="bot-avatar">🤖</div>';
+            }
+            
+            // Add a personalized indicator if the message is personalized
+            const personalizedBadge = isPersonalized ? 
+                '<span style="font-size: 0.7em; background: #edf7ed; color: #0d6832; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">Personalized</span>' : 
+                '';
+            
+            if (sender === 'bot' && isPersonalized) {
+                messageDiv.classList.add('personalized-message');
+            }
+            
+            messageDiv.innerHTML = `
+                ${avatar}
+                <div class="message-content">
+                    ${message}
+                    ${sender === 'bot' ? personalizedBadge : ''}
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Fallback message processor (used when API fails)
+        function processUserMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Check for appointment management
+            if (lowerMessage.includes('appointment') || lowerMessage.includes('schedule') || lowerMessage.includes('patient')) {
+                addMessage('bot', 'You can manage upcoming patient appointments in the "Appointments" tab. You can view details, accept/reject requests, and add notes for each appointment.<div class="suggested-queries"><button onclick="showTab(\'appointments\')">View appointments</button><button onclick="handleSuggestedQuery(\'Create prescription\')">Create prescription</button></div>');
+            }
+            // Check for prescription queries
+            else if (lowerMessage.includes('prescription') || lowerMessage.includes('medicine') || lowerMessage.includes('treatment')) {
+                addMessage('bot', 'To create a new prescription:<br>1. Find the corresponding appointment<br>2. Click "Create Prescription"<br>3. Enter medication details<br>4. Submit the form<br><br>The prescription will be made available to the patient immediately.<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'View patient history\')">View patient history</button><button onclick="handleSuggestedQuery(\'Medication guidelines\')">Medication guidelines</button></div>');
+            }
+            // Default response
+            else {
+                addMessage('bot', 'I\'m here to assist with your doctor dashboard. How can I help you today?<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Manage appointments\')">Manage appointments</button><button onclick="handleSuggestedQuery(\'Create prescription\')">Create prescription</button><button onclick="handleSuggestedQuery(\'Patient history\')">Patient history</button></div>');
+            }
+        }
+        
+        // Function to show a specific tab - helper for actionable buttons
+        function showTab(tabName) {
+            if (tabName === 'appointments') {
+                // Focus on appointments section
+                document.querySelector('.appointments-section').scrollIntoView({ behavior: 'smooth' });
+            } else if (tabName === 'profile') {
+                // If there's a profile section in the future
+                alert('Profile functionality will be available in a future update.');
+            }
+        }
+
+        // Add a function to display suggestions
+        function addSuggestions(suggestions) {
+            const chatMessages = document.getElementById('chatMessages');
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'suggested-queries';
+            
+            suggestions.forEach(suggestion => {
+                const button = document.createElement('button');
+                button.textContent = suggestion;
+                button.onclick = () => handleSuggestedQuery(suggestion);
+                suggestionsDiv.appendChild(button);
+            });
+            
+            const lastMessage = chatMessages.lastElementChild;
+            if (lastMessage && lastMessage.classList.contains('bot-message')) {
+                const messageContent = lastMessage.querySelector('.message-content');
+                messageContent.appendChild(suggestionsDiv);
+            } else {
+                const suggestionContainer = document.createElement('div');
+                suggestionContainer.className = 'message bot-message';
+                suggestionContainer.innerHTML = `
+                    <div class="bot-avatar">🤖</div>
+                    <div class="message-content">
+                        <div>Here are some suggestions:</div>
+                    </div>
+                `;
+                suggestionContainer.querySelector('.message-content').appendChild(suggestionsDiv);
+                chatMessages.appendChild(suggestionContainer);
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Initialize video call functionality
+        function initializeVideoCall() {
+            // Add fullscreen toggle functionality
+            document.getElementById('fullscreenToggle').addEventListener('click', function() {
+                const container = document.getElementById('videoCallContainer');
+                container.classList.toggle('fullscreen');
+                
+                const icon = this.querySelector('.material-icons');
+                if (container.classList.contains('fullscreen')) {
+                    icon.textContent = 'fullscreen_exit';
+                } else {
+                    icon.textContent = 'fullscreen';
+                }
+            });
+            
+            // Initialize disease analysis feature
+            initializeDiseaseAnalysis();
+        }
+
+        // Function to start a video call
+        function startVideoCall(appointmentId, patientId) {
+            // Make sure video call script is loaded
+            if (typeof VideoCall === 'undefined') {
+                // Load the video call script if not loaded
+                const script = document.createElement('script');
+                script.src = '/public/js/video-call.js';
+                script.onload = function() {
+                    // Initialize and start call once script is loaded
+                    VideoCall.initialize('videoCallContainer', 'localVideo', 'remoteVideo', 'doctor');
+                    startCallProcess(appointmentId, patientId);
+                };
+                document.head.appendChild(script);
+            } else {
+                // Script already loaded, just initialize and start call
+                VideoCall.initialize('videoCallContainer', 'localVideo', 'remoteVideo', 'doctor');
+                startCallProcess(appointmentId, patientId);
+            }
+        }
+
+        // Actually start the call process
+        function startCallProcess(appointmentId, patientId) {
+            // Show the video call container
+            document.getElementById('videoCallContainer').style.display = 'block';
+            
+            // Start the call
+            VideoCall.startCall(appointmentId, patientId);
+        }
+
+        // Initialize video call when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeVideoCall();
+        });
+    </script>
+
+  <!-- Auto-injected scripts for blockchain and MongoDB integration -->
+  <script src="/public/js/api.js"></script>
+  <script src="/public/js/blockchain-widget.js"></script>
+  <script src="/public/js/init.js"></script>
+  <script src="/public/js/auth.js"></script>
+  
+  <!-- Contact Footer -->
+  <div class="contact-footer" style="position: fixed; bottom: 20px; right: 20px; background: #3b82f6; color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.85em; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); z-index: 1000;">
+      Need help? <a href="mailto:admin@gmail.com" style="color: white; text-decoration: none;">Contact Admin</a>
+  </div>
+  
+  <!-- Disease Analysis JavaScript -->
+  <script>
+    // ML Disease Analysis functionality
+    function initializeDiseaseAnalysis() {
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const symptomsInput = document.getElementById('symptomsInput');
+        const analysisResults = document.getElementById('analysisResults');
+        const resultsContent = document.getElementById('resultsContent');
+        
+        if (!analyzeBtn) return; // Exit if elements aren't found
+        
+        // Analyze button click handler
+        analyzeBtn.addEventListener('click', function() {
+            const symptomsText = symptomsInput.value.trim();
+            if (!symptomsText) {
+                alert('Please enter symptoms');
+                return;
+            }
+            
+            // Parse symptoms (comma separated)
+            const symptoms = symptomsText.split(',').map(s => s.trim()).filter(s => s);
+            
+            // Show loading state
+            analysisResults.style.display = 'block';
+            resultsContent.innerHTML = '<div style="text-align: center; padding: 5px;"><div style="display: inline-block; width: 20px; height: 20px; border: 2px solid #ccc; border-top-color: #0284c7; border-radius: 50%; animation: spin 1s linear infinite;"></div> Analyzing symptoms...</div>';
+            
+            // Add spinning animation if not already present
+            if (!document.getElementById('spin-animation')) {
+                const style = document.createElement('style');
+                style.id = 'spin-animation';
+                style.textContent = `
+                    @keyframes spin {
+                        to { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Call the ML API to analyze symptoms
+            fetch('/api/disease-analysis/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ symptoms })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.analysis) {
+                    // Format and display the results
+                    const topDiseases = data.analysis.topDiseases;
+                    let resultsHtml = '<div style="font-size: 14px;">';
+                    
+                    if (topDiseases.length > 0) {
+                        resultsHtml += '<p><strong>Possible conditions:</strong></p><ul style="margin: 5px 0 10px 20px;">';
+                        
+                        topDiseases.forEach((disease, index) => {
+                            resultsHtml += `<li><strong>${disease.disease}</strong> (${disease.confidence.toFixed(1)}% match)`;
+                            if (index === 0) {
+                                resultsHtml += ` - <em>${disease.description || 'No description available'}</em>`;
+                            }
+                            resultsHtml += '</li>';
+                        });
+                        
+                        resultsHtml += '</ul>';
+                        
+                        // Add recommendation from top disease
+                        const topDisease = topDiseases[0];
+                        resultsHtml += `<p><strong>Suggested treatment:</strong> ${topDisease.treatment || 'Treatment information not available'}</p>`;
+                        
+                        // Add button to auto-fill prescription
+                        resultsHtml += `<button onclick="autoFillPrescription('${topDisease.disease}', '${topDisease.treatment || 'No specific treatment information available'}')" style="background: #0284c7; color: white; border: none; border-radius: 4px; padding: 5px 10px; margin-top: 8px; cursor: pointer; font-size: 12px;">Use Suggestion</button>`;
+                    } else {
+                        resultsHtml += '<p>No matching conditions found. Consider adding more specific symptoms.</p>';
+                    }
+                    
+                    resultsHtml += '</div>';
+                    resultsContent.innerHTML = resultsHtml;
+                } else {
+                    resultsContent.innerHTML = '<p style="color: #dc2626;">Error analyzing symptoms. Please try again.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error during symptom analysis:', error);
+                resultsContent.innerHTML = '<p style="color: #dc2626;">Error analyzing symptoms. Please try again.</p>';
+            });
+        });
+        
+        // Allow pressing Enter to submit
+        symptomsInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeBtn.click();
+            }
+        });
+    }
+    
+    // Function to auto-fill prescription based on disease analysis
+    function autoFillPrescription(disease, treatment) {
+        const prescriptionText = document.getElementById('prescriptionText');
+        if (prescriptionText) {
+            prescriptionText.value = `Diagnosed condition: ${disease}\n\nRecommended treatment: ${treatment}\n\nAdditional instructions: `;
+            prescriptionText.focus();
+            // Scroll to the end of the text
+            prescriptionText.scrollTop = prescriptionText.scrollHeight;
+        }
+    }
+  </script>
+  
+  <!-- AI Chatbot Widget -->
+  <div id="chatbot-widget" class="chatbot-collapsed" style="position: fixed; bottom: 20px; left: 20px; z-index: 1001; font-family: 'Inter', sans-serif; transition: all 0.3s ease;">
+      <div class="chatbot-button" onclick="toggleChatbot()" style="background: #3b82f6; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transition: all 0.3s ease;">
+          <span class="chatbot-icon" style="font-size: 1.5em;">💬</span>
+          <span class="chatbot-label" style="font-weight: 500;">HealthBot</span>
+      </div>
+      <div class="chatbot-container" style="display: none; position: absolute; bottom: 70px; left: 0; width: 350px; background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15); overflow: hidden; flex-direction: column; height: 450px;">
+          <div class="chatbot-header" style="padding: 15px; background: #3b82f6; color: white; display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="margin: 0; font-size: 1.1em;">HealthBot Assistant</h3>
+              <button onclick="toggleChatbot()" class="close-btn" style="background: none; border: none; color: white; font-size: 1.2em; cursor: pointer; padding: 0; line-height: 1;">✕</button>
+          </div>
+          <div class="chatbot-messages" id="chatMessages" style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+              <div class="message bot-message" style="display: flex; gap: 10px; max-width: 85%; align-self: flex-start;">
+                  <div class="bot-avatar" style="background: #dbeafe; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2em;">🤖</div>
+                  <div class="message-content" style="background: #f1f5f9; padding: 12px; border-radius: 12px; font-size: 0.95em;">
+                      Hello, Doctor! I'm your HealthBot assistant. How can I help with your practice today?
+                      <div class="suggested-queries" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+                          <button onclick="handleSuggestedQuery('Manage appointments')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left; transition: all 0.2s ease;">Manage appointments</button>
+                          <button onclick="handleSuggestedQuery('Create prescription')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left; transition: all 0.2s ease;">Create prescription</button>
+                          <button onclick="handleSuggestedQuery('Patient history')" style="background: #dbeafe; color: #3b82f6; border: none; border-radius: 20px; padding: 8px 12px; font-size: 0.85em; cursor: pointer; text-align: left; transition: all 0.2s ease;">Patient history</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="chatbot-input" style="padding: 15px; display: flex; gap: 10px; border-top: 1px solid #e2e8f0;">
+              <input type="text" id="userInput" placeholder="Type your question here..." onkeypress="if(event.key === 'Enter') sendMessage()" style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95em;">
+              <button onclick="sendMessage()" style="background: #3b82f6; color: white; border: none; border-radius: 8px; padding: 10px 15px; font-weight: 500; cursor: pointer;">Send</button>
+          </div>
+      </div>
+  </div>
+  
+  <!-- Hospital Finder Modal -->
+  <div id="hospital-finder-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center;">
+    <div style="background: white; width: 90%; max-width: 600px; border-radius: 12px; padding: 20px; max-height: 80vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; color: #3b82f6;">Find Nearby Hospitals</h2>
+        <button onclick="closeHospitalFinder()" style="background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
+      </div>
+      
+      <div id="hospital-search-form" style="margin-bottom: 20px;">
+        <p>Enter a location to find nearby hospitals for patient referrals:</p>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="location-input" placeholder="City, zip code, or address" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+          <button onclick="findHospitals()" style="background: #3b82f6; color: white; border: none; border-radius: 8px; padding: 10px 15px; cursor: pointer;">Search</button>
+        </div>
+      </div>
+      
+      <div id="hospital-error" style="display: none; color: #ef4444; background: #fee2e2; padding: 10px; border-radius: 8px; margin-bottom: 20px;"></div>
+      
+      <div id="hospital-loading" style="display: none; text-align: center; padding: 20px;">
+        <div class="typing-dots" style="margin: 0 auto;">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <p>Searching for hospitals...</p>
+      </div>
+      
+      <div id="hospital-results" style="display: none;">
+        <h3 id="hospital-results-title">Hospitals near <span id="hospital-location"></span></h3>
+        <div id="hospitals-list" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Hospital finder JavaScript -->
+  <script>
+    // Hospital finder functionality
+    function openHospitalFinder() {
+        const modal = document.getElementById('hospital-finder-modal');
+        modal.style.display = 'flex';
+    }
+    
+    function closeHospitalFinder() {
+        const modal = document.getElementById('hospital-finder-modal');
+        modal.style.display = 'none';
+        
+        // Reset the form
+        document.getElementById('hospital-results').style.display = 'none';
+        document.getElementById('hospital-error').style.display = 'none';
+        document.getElementById('hospital-loading').style.display = 'none';
+        document.getElementById('location-input').value = '';
+    }
+    
+    async function findHospitals() {
+        const locationInput = document.getElementById('location-input').value.trim();
+        
+        if (!locationInput) {
+            document.getElementById('hospital-error').textContent = 'Please enter a location';
+            document.getElementById('hospital-error').style.display = 'block';
+            return;
+        }
+        
+        // Show loading indicator
+        document.getElementById('hospital-loading').style.display = 'block';
+        document.getElementById('hospital-results').style.display = 'none';
+        document.getElementById('hospital-error').style.display = 'none';
+        
+        try {
+            // Call the Gemini API to find hospitals
+            const response = await window.API.findNearbyHospitals(locationInput);
+            
+            if (response.success) {
+                // Display the results
+                displayHospitals(response);
+            } else {
+                throw new Error(response.message || 'Failed to find hospitals');
+            }
+        } catch (error) {
+            console.error('Error finding hospitals:', error);
+            document.getElementById('hospital-error').textContent = 'Unable to find hospitals. Please try again.';
+            document.getElementById('hospital-error').style.display = 'block';
+            document.getElementById('hospital-loading').style.display = 'none';
+        }
+    }
+    
+    function displayHospitals(data) {
+        // Hide loading indicator
+        document.getElementById('hospital-loading').style.display = 'none';
+        
+        // Show results section
+        document.getElementById('hospital-results').style.display = 'block';
+        document.getElementById('hospital-location').textContent = data.location;
+        
+        // Get hospitals list container
+        const hospitalsListContainer = document.getElementById('hospitals-list');
+        hospitalsListContainer.innerHTML = '';
+        
+        // Add each hospital to the list
+        if (data.hospitals && data.hospitals.length > 0) {
+            data.hospitals.forEach(hospital => {
+                const hospitalCard = document.createElement('div');
+                hospitalCard.className = 'hospital-card';
+                hospitalCard.style.cssText = 'background: #f8fafc; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);';
+                
+                const hospitalName = document.createElement('h4');
+                hospitalName.style.cssText = 'margin: 0 0 8px 0; color: #3b82f6;';
+                hospitalName.textContent = hospital.name;
+                
+                const hospitalDescription = document.createElement('p');
+                hospitalDescription.style.cssText = 'margin: 0 0 8px 0; font-size: 0.95em;';
+                hospitalDescription.textContent = hospital.description;
+                
+                hospitalCard.appendChild(hospitalName);
+                hospitalCard.appendChild(hospitalDescription);
+                
+                // Add specialized services if available
+                if (hospital.specializedServices) {
+                    const servicesTitle = document.createElement('p');
+                    servicesTitle.style.cssText = 'margin: 10px 0 4px 0; font-weight: 600; font-size: 0.9em;';
+                    servicesTitle.textContent = 'Specialized Services:';
+                    
+                    const servicesText = document.createElement('p');
+                    servicesText.style.cssText = 'margin: 0; font-size: 0.9em; color: #4b5563;';
+                    servicesText.textContent = hospital.specializedServices;
+                    
+                    hospitalCard.appendChild(servicesTitle);
+                    hospitalCard.appendChild(servicesText);
+                }
+                
+                // Add distance if available
+                if (hospital.distance) {
+                    const distanceText = document.createElement('p');
+                    distanceText.style.cssText = 'margin: 10px 0 0 0; font-size: 0.9em; color: #6b7280;';
+                    distanceText.textContent = `Distance: ${hospital.distance}`;
+                    
+                    hospitalCard.appendChild(distanceText);
+                }
+                
+                hospitalsListContainer.appendChild(hospitalCard);
+            });
+        } else {
+            const noResults = document.createElement('p');
+            noResults.style.cssText = 'text-align: center; padding: 20px;';
+            noResults.textContent = 'No hospitals found for this location.';
+            
+            hospitalsListContainer.appendChild(noResults);
+        }
+    }
+    
+    // Add the hospital finder feature to the API if not already added
+    if (!window.API.findNearbyHospitals) {
+        window.API.findNearbyHospitals = async function(location) {
+            try {
+                const response = await window.API.request('/gemini/find-hospitals', {
+                    method: 'POST',
+                    body: JSON.stringify({ location })
+                });
+                return response;
+            } catch (error) {
+                console.error('Error calling hospital finder API:', error);
+                return {
+                    success: false,
+                    message: error.message || 'Failed to find hospitals'
+                };
+            }
+        };
+    }
+  </script>
+</body>
+</html>

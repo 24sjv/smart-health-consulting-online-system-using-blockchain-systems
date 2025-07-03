@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Login</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateX(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-arrow {
+            width: 20px;
+            height: 20px;
+            border: solid #1e293b;
+            border-width: 0 2px 2px 0;
+            transform: rotate(135deg);
+            margin-left: 5px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .title {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            color: #1e293b;
+            background: white;
+            height: 48px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -15px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .register-prompt {
+            text-align: center;
+            margin-top: 20px;
+            color: #64748b;
+        }
+
+        .register-prompt a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-prompt a:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Success Message Styles */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+            }
+        }
+        
+        /* Contact Footer */
+        .contact-footer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .contact-footer a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Chatbot Widget Styles */
+        #chatbot-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1001;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: transparent; /* Overlay removed for fully visible background */
+        }
+        
+        .chatbot-collapsed .chatbot-container {
+            display: none;
+        }
+        
+        .chatbot-button {
+            background: #3b82f6;
+            color: white;
+            border-radius: 50px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .chatbot-icon {
+            font-size: 1.5em;
+        }
+        
+        .chatbot-label {
+            font-weight: 500;
+        }
+        
+        .chatbot-container {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 450px;
+        }
+        
+        .chatbot-header {
+            padding: 15px;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 85%;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .bot-avatar {
+            background: #dbeafe;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        
+        .user-avatar {
+            background: #3b82f6;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+        }
+        
+        .message-content {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.95em;
+        }
+        
+        .user-message .message-content {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .chatbot-input {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+        
+        .chatbot-input button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .chatbot-input button:hover {
+            background: #2563eb;
+        }
+        
+        .suggested-queries {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .suggested-queries button {
+            background: #dbeafe;
+            color: #3b82f6;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 0.85em;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+        
+        .suggested-queries button:hover {
+            background: #bfdbfe;
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-container {
+                width: 300px;
+                height: 400px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/shared.css">
+</head>
+<body style="background-image: url('/images/pexels-health-bg.jpeg') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed !important;">
+    <div class="header">
+        <a href="login-choice.html" class="back-button">
+            <span class="back-arrow"></span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">Patient Login</h1>
+        <p class="subtitle">Welcome back to your health portal</p>
+
+        <form id="patientLoginForm" onsubmit="return validateForm(event)">
+            <div class="form-group">
+                <label for="username">Username*</label>
+                <input type="text" id="username" required placeholder="Enter your username">
+                <div class="error-message" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password*</label>
+                <input type="password" id="password" required placeholder="Enter your password">
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+
+        <p class="register-prompt">
+            Don't have an account? <a href="register-choice.html">Register here</a>
+        </p>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        Login successful!
+    </div>
+    
+    <!-- Contact Footer -->
+    <div class="contact-footer">
+        Need help? <a href="mailto:admin@gmail.com">Contact Admin</a>
+    </div>
+    
+    <!-- AI Chatbot Widget -->
+    <div id="chatbot-widget" class="chatbot-collapsed">
+        <div class="chatbot-button" onclick="toggleChatbot()">
+            <span class="chatbot-icon">💬</span>
+            <span class="chatbot-label">HealthBot</span>
+        </div>
+        <div class="chatbot-container">
+            <div class="chatbot-header">
+                <h3>HealthBot Assistant</h3>
+                <button onclick="toggleChatbot()" class="close-btn">✕</button>
+            </div>
+            <div class="chatbot-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="bot-avatar">🤖</div>
+                    <div class="message-content">
+                        Hello! I'm HealthBot, your virtual healthcare assistant. How can I help you with patient login today?
+                        <div class="suggested-queries">
+                            <button onclick="handleSuggestedQuery('Login help')">Login help</button>
+                            <button onclick="handleSuggestedQuery('Forgot password')">Forgot password</button>
+                            <button onclick="handleSuggestedQuery('Register as patient')">Register as patient</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="userInput" placeholder="Type your question here..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chatbot functionality
+        function toggleChatbot() {
+            const chatbotWidget = document.getElementById('chatbot-widget');
+            chatbotWidget.classList.toggle('chatbot-collapsed');
+        }
+        
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const userMessage = userInput.value.trim();
+            
+            if (userMessage === '') return;
+            
+            // Add user message to chat
+            addMessage('user', userMessage);
+            
+            // Clear input
+            userInput.value = '';
+            
+            // Process the message and respond
+            setTimeout(() => {
+                processUserMessage(userMessage);
+            }, 600);
+        }
+        
+        function handleSuggestedQuery(query) {
+            addMessage('user', query);
+            
+            setTimeout(() => {
+                processUserMessage(query);
+            }, 600);
+        }
+        
+        function addMessage(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            let avatar;
+            if (sender === 'user') {
+                avatar = '<div class="user-avatar">👤</div>';
+            } else {
+                avatar = '<div class="bot-avatar">🤖</div>';
+            }
+            
+            messageDiv.innerHTML = `
+                ${avatar}
+                <div class="message-content">${message}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function processUserMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Check for login help
+            if (lowerMessage.includes('login help') || lowerMessage.includes('can\'t login') || lowerMessage.includes('how to login')) {
+                addMessage('bot', 'To log in as a patient, please enter your username and password in the form. Make sure you are using the correct credentials that you created during registration. If you\'re having trouble, double-check that:<br>1. Caps Lock is not enabled<br>2. You\'re using the correct username<br>3. You\'re entering the correct password<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Forgot password\')">I forgot my password</button><button onclick="handleSuggestedQuery(\'Register as patient\')">I don\'t have an account</button></div>');
+            }
+            // Check for password help
+            else if (lowerMessage.includes('forgot') || lowerMessage.includes('reset password') || lowerMessage.includes('password')) {
+                addMessage('bot', 'If you\'ve forgotten your password, you can reset it by clicking on the "Forgot password?" link below the password field. You\'ll need to verify your identity using the email address you provided during registration. After verification, you\'ll be able to set a new password.<div class="suggested-queries"><button onclick="document.querySelector(\'.forgot-password a\').click()">Reset my password</button><button onclick="handleSuggestedQuery(\'Contact support\')">Contact support</button></div>');
+            }
+            // Check for registration
+            else if (lowerMessage.includes('register') || lowerMessage.includes('sign up') || lowerMessage.includes('create account') || lowerMessage.includes('new account')) {
+                addMessage('bot', 'To register as a new patient, you\'ll need to create an account. This allows you to book appointments, access your medical records, and communicate with healthcare providers.<div class="suggested-queries"><button onclick="window.location.href=\'register-choice.html\'">Register now</button><button onclick="handleSuggestedQuery(\'Registration requirements\')">What do I need to register?</button></div>');
+            }
+            // Check for registration requirements
+            else if (lowerMessage.includes('requirements') || lowerMessage.includes('what do i need')) {
+                addMessage('bot', 'To register as a patient, you\'ll need to provide:<br>- Full name<br>- Username<br>- Password<br>- Gender<br>- Email address<br>- Mobile number<br>- City<br>- Date of birth<br><br>All these fields are required to complete your registration. Your information is securely stored and used only for healthcare purposes.');
+            }
+            // Check for technical issues
+            else if (lowerMessage.includes('technical') || lowerMessage.includes('issue') || lowerMessage.includes('problem') || lowerMessage.includes('error')) {
+                addMessage('bot', 'If you\'re experiencing technical issues with logging in, try these steps:<br>1. Clear your browser cache and cookies<br>2. Try using a different browser<br>3. Check your internet connection<br>4. Make sure JavaScript is enabled<br><br>If the problem persists, please contact our support team at admin@gmail.com');
+            }
+            // Check for contact support
+            else if (lowerMessage.includes('contact') || lowerMessage.includes('support') || lowerMessage.includes('help')) {
+                addMessage('bot', 'Our support team is available to help with any login issues. Please contact us at admin@gmail.com with details about your problem. Include your full name and a description of the issue you\'re experiencing so we can assist you more effectively.');
+            }
+            // Default response
+            else {
+                addMessage('bot', 'I\'m here to help you with patient login. How can I assist you today?<div class="suggested-queries"><button onclick="handleSuggestedQuery(\'Login help\')">Login help</button><button onclick="handleSuggestedQuery(\'Forgot password\')">Forgot password</button><button onclick="handleSuggestedQuery(\'Register as patient\')">Register as patient</button></div>');
+            }
+        }
+
+        // Original form validation
+        function validateForm(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            let isValid = true;
+            
+            // Reset error messages
+            document.getElementById('usernameError').style.display = 'none';
+            document.getElementById('passwordError').style.display = 'none';
+            
+            // Validate username
+            if (username === '') {
+                document.getElementById('usernameError').textContent = 'Please enter your username';
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
+            }
+            
+            // Validate password
+            if (password === '') {
+                document.getElementById('passwordError').textContent = 'Please enter your password';
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Get patients from localStorage
+                const patients = JSON.parse(localStorage.getItem('patients') || '[]');
+                
+                // Find matching patient
+                const patient = patients.find(p => 
+                    p.username === username && p.password === password
+                );
+                
+                if (patient) {
+                    // Store logged in patient info (except password)
+                    const patientInfo = { ...patient };
+                    delete patientInfo.password;
+                    localStorage.setItem('currentPatient', JSON.stringify(patientInfo));
+                    
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Redirect to patient dashboard
+                    setTimeout(() => {
+                        window.location.href = 'patient-dashboard.html';
+                    }, 1000);
+                    
+                    return true;
+                } else {
+                    // Show error for invalid credentials
+                    document.getElementById('passwordError').textContent = 'Invalid username or password';
+                    document.getElementById('passwordError').style.display = 'block';
+                    return false;
+                }
+            }
+            
+            return false;
+        }
+    </script>
+
+  <!-- Auto-injected scripts for blockchain and MongoDB integration -->
+  <script src="/public/js/api.js"></script>
+  <script src="/public/js/blockchain-widget.js"></script>
+  <script src="/public/js/init.js"></script>
+  <script src="/public/js/auth.js"></script>
+</body>
+</html>

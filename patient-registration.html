@@ -1,0 +1,91 @@
+<form id="registrationForm" onsubmit="registerPatient(event)">
+    <div class="form-group">
+        <input type="text" id="fullName" required>
+        <label>Full Name</label>
+    </div>
+    <div class="form-group">
+        <input type="email" id="email" required>
+        <label>Email</label>
+    </div>
+    <div class="form-group">
+        <input type="tel" id="phone" required>
+        <label>Phone Number</label>
+    </div>
+    <div class="form-group">
+        <input type="text" id="address" required>
+        <label>Address</label>
+    </div>
+    <div class="form-group">
+        <input type="password" id="password" required>
+        <label>Password</label>
+    </div>
+</form>
+
+<div class="login-link">
+    Already registered? <a href="login-choice.html">Login here</a>
+</div>
+
+<style>
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: #64748b;
+    }
+
+    .login-link a {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+</style>
+
+<!-- Add CryptoJS library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script src="blockchain.js"></script>
+
+<script>
+    function registerPatient(event) {
+        event.preventDefault();
+        
+        try {
+            // Get form values
+            const patient = {
+                id: 'PAT' + Date.now(),
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                password: CryptoJS.SHA256(document.getElementById('password').value).toString(),
+                registrationDate: new Date().toISOString().split('T')[0],
+                status: 'active'
+            };
+
+            // Add to blockchain
+            healthChain.addPatient(patient);
+            console.log('Patient added to blockchain successfully');
+
+            // Show success message
+            document.getElementById('successModal').style.display = 'flex';
+
+            // Clear form
+            document.getElementById('registrationForm').reset();
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            alert('Error registering patient. Please try again.');
+        }
+    }
+
+    // Verify data persistence
+    window.onload = function() {
+        const patients = healthChain.getPatients();
+        console.log('Currently registered patients:', patients);
+    }
+</script> 

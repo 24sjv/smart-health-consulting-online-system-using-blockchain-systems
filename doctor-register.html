@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f8fafc;
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .title {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            color: #1e293b;
+            background: #f8fafc;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        .resume-upload {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .resume-upload:hover {
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        .resume-icon {
+            font-size: 40px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .resume-text {
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .resume-subtext {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        .no-resume-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 5px 0;
+        }
+
+        .no-resume-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .no-resume-checkbox label {
+            margin: 0;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Success Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #ecfdf5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: #10b981;
+        }
+
+        .modal-title {
+            color: #1e293b;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .modal-text {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .login-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .home-btn {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #1e293b;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .home-btn:hover {
+            color: #3b82f6;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #1e293b;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+        
+        /* Contact Footer */
+        .contact-footer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .contact-footer a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/shared.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="background-image: url('/images/pexels-health-bg.jpeg') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed !important;">
+    <div class="header" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: transparent;">
+        <a href="register-choice.html" class="back-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(5px);">
+            <span style="font-size: 1.2em;">←</span>
+            Back to Registration
+        </a>
+    </div>
+    <div class="container">
+        <h1 class="title">Doctor Registration</h1>
+        <p class="subtitle">Join our healthcare professional network</p>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="fullName">Full Name*</label>
+                <input type="text" id="fullName" name="fullName" required>
+                <div class="error-message" id="fullNameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username*</label>
+                <input type="text" id="username" name="username" required>
+                <div class="error-message" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password*</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="specialization">Specialization*</label>
+                <input type="text" id="specialization" name="specialization" required>
+                <div class="error-message" id="specializationError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address*</label>
+                <input type="email" id="email" name="email" required>
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number*</label>
+                <input type="tel" id="phone" name="phone" required>
+                <div class="error-message" id="phoneError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Experience*</label>
+                <input type="text" id="experience" name="experience" required>
+                <div class="error-message" id="experienceError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="qualification">Qualification*</label>
+                <input type="text" id="qualification" name="qualification" required>
+                <div class="error-message" id="qualificationError"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Resume</label>
+                <div class="resume-upload" id="resumeUploadBox">
+                    <div class="resume-icon">📄</div>
+                    <input type="file" id="resume" accept=".pdf,.doc,.docx" style="display: none;">
+                    <p class="resume-text">Drag & Drop your resume here or Click to Browse</p>
+                    <p class="resume-subtext">(PDF, DOC, DOCX files only)</p>
+                </div>
+                <div class="no-resume-checkbox">
+                    <input type="checkbox" id="noResume" onchange="toggleResumeUpload()">
+                    <label for="noResume">I don't have a resume at the moment</label>
+                </div>
+                <div class="error-message" id="resumeError"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Register</button>
+        </form>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-icon">✓</div>
+            <h2 class="modal-title">Registration Successful!</h2>
+            <p class="modal-text">Your account has been created successfully.</p>
+            <a href="login-choice.html" class="login-btn">Login Now</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Create new doctor object with all form fields
+            const newDoctor = {
+                id: 'DOC' + Date.now(),
+                fullName: document.getElementById('fullName').value,
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                experience: document.getElementById('experience').value,
+                qualification: document.getElementById('qualification').value,
+                specialization: document.getElementById('specialization').value,
+                password: document.getElementById('password').value,
+                hasResume: !document.getElementById('noResume').checked,
+                resumeFileName: document.getElementById('noResume').checked ? null : 
+                    (document.getElementById('resume').files[0]?.name || null),
+                status: 'active',
+                registrationDate: new Date().toISOString().split('T')[0]
+            };
+
+            // For debugging
+            console.log('Registering doctor:', { ...newDoctor, password: '***' });
+
+            // Get existing doctors or initialize empty array
+            let doctors = JSON.parse(localStorage.getItem('doctors') || '[]');
+            
+            // Check if email already exists
+            if (doctors.some(doc => doc.email === newDoctor.email)) {
+                alert('A doctor with this email already exists. Please use a different email.');
+                return;
+            }
+
+            // Validate resume if "No Resume" is not checked
+            if (!document.getElementById('noResume').checked && 
+                !document.getElementById('resume').files[0]) {
+                const resumeError = document.getElementById('resumeError');
+                resumeError.textContent = 'Please upload your resume or check "I don\'t have a resume"';
+                resumeError.style.display = 'block';
+                return;
+            }
+            
+            // Add new doctor
+            doctors.push(newDoctor);
+            
+            // Save to localStorage
+            localStorage.setItem('doctors', JSON.stringify(doctors));
+
+            // For debugging
+            console.log('Updated doctors list:', doctors.map(d => ({ ...d, password: '***' })));
+
+            // Show success modal
+            const modal = document.getElementById('successModal');
+            modal.style.display = 'flex';
+            
+            // Redirect to login page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'doctor-login.html';
+            }, 2000);
+        });
+
+        // Initialize file upload functionality
+        const resumeUploadBox = document.getElementById('resumeUploadBox');
+        const resumeInput = document.getElementById('resume');
+
+        resumeUploadBox.addEventListener('click', () => {
+            if (!document.getElementById('noResume').checked) {
+                resumeInput.click();
+            }
+        });
+
+        resumeInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                document.querySelector('.resume-text').textContent = `Selected file: ${fileName}`;
+                document.getElementById('resumeError').style.display = 'none';
+            }
+        });
+
+        // Handle drag and drop
+        resumeUploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!document.getElementById('noResume').checked) {
+                resumeUploadBox.style.borderColor = '#3b82f6';
+                resumeUploadBox.style.background = 'white';
+            }
+        });
+
+        resumeUploadBox.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            resumeUploadBox.style.borderColor = '#e2e8f0';
+            resumeUploadBox.style.background = '#f8fafc';
+        });
+
+        resumeUploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (!document.getElementById('noResume').checked) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    resumeInput.files = files;
+                    document.querySelector('.resume-text').textContent = `Selected file: ${files[0].name}`;
+                    document.getElementById('resumeError').style.display = 'none';
+                }
+            }
+            resumeUploadBox.style.borderColor = '#e2e8f0';
+            resumeUploadBox.style.background = '#f8fafc';
+        });
+
+        function toggleResumeUpload() {
+            const noResumeCheckbox = document.getElementById('noResume');
+            const resumeUploadBox = document.getElementById('resumeUploadBox');
+            const resumeInput = document.getElementById('resume');
+            
+            if (noResumeCheckbox.checked) {
+                resumeUploadBox.style.opacity = '0.5';
+                resumeUploadBox.style.pointerEvents = 'none';
+                resumeInput.value = '';
+                document.querySelector('.resume-text').textContent = 'Drag & Drop your resume here or Click to Browse';
+                document.getElementById('resumeError').style.display = 'none';
+            } else {
+                resumeUploadBox.style.opacity = '1';
+                resumeUploadBox.style.pointerEvents = 'auto';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('successModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+
+  <!-- Auto-injected scripts for blockchain and MongoDB integration -->
+  <script src="/public/js/api.js"></script>
+  <script src="/public/js/blockchain-widget.js"></script>
+  <script src="/public/js/init.js"></script>
+  <script src="/public/js/auth.js"></script>
+  
+  <!-- Contact Footer -->
+  <div class="contact-footer">
+      Need help? <a href="mailto:admin@gmail.com">Contact Admin</a>
+  </div>
+</body>
+</html>

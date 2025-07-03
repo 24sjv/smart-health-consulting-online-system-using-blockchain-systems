@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Panel</title>
+    <link rel="stylesheet" href="/public/css/background.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            padding: 100px 40px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .doctors-icon {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .patients-icon {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .appointments-icon {
+            background: #fdf4ff;
+            color: #c026d3;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-count {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 10px 0;
+            color: #1e293b;
+        }
+
+        .card-description {
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .view-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #f8fafc;
+            color: #1e293b;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .view-btn:hover {
+            background: #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 90px 20px 20px;
+            }
+            
+            .header {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/shared.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="background-image: url('/images/pexels-health-bg.jpeg') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; background-attachment: fixed !important;">
+    <header class="header">
+        <h1 class="header-title">Admin Control Panel</h1>
+        <button onclick="handleLogout()" class="logout-btn">Logout</button>
+    </header>
+
+    <div class="container">
+        <div class="cards-container">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon doctors-icon">👨‍⚕️</div>
+                    <h2 class="card-title">Doctors</h2>
+                </div>
+                <div class="card-count" id="doctorsCount">0</div>
+                <p class="card-description">Total registered doctors in the system</p>
+                <a href="admin-view-doctors.html" class="view-btn">View All Doctors</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon patients-icon">👤</div>
+                    <h2 class="card-title">Patients</h2>
+                </div>
+                <div class="card-count" id="patientsCount">0</div>
+                <p class="card-description">Total registered patients in the system</p>
+                <a href="admin-view-patients.html" class="view-btn">View All Patients</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon appointments-icon">📅</div>
+                    <h2 class="card-title">Appointments</h2>
+                </div>
+                <div class="card-count" id="appointmentsCount">0</div>
+                <p class="card-description">Total scheduled appointments</p>
+                <a href="admin-view-appointments.html" class="view-btn">View All Appointments</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple admin check
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Simple logout function
+        function handleLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'index.html';
+        }
+
+        // Function to update counts
+        function updateCounts() {
+            // Get data from localStorage
+            const doctors = JSON.parse(localStorage.getItem('doctors') || '[]');
+            const patients = JSON.parse(localStorage.getItem('patients') || '[]');
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+
+            // Update the counts
+            document.getElementById('doctorsCount').textContent = doctors.length;
+            document.getElementById('patientsCount').textContent = patients.length;
+            document.getElementById('appointmentsCount').textContent = appointments.length;
+        }
+
+        // Update counts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounts();
+        });
+    </script>
+</body>
+</html>
